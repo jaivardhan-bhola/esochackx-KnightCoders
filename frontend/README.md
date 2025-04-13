@@ -1,4 +1,4 @@
-# frontend
+# civicsense
 
 A new Flutter project.
 
