@@ -96,15 +96,18 @@ def generate_officer_brief(summary, severity, departments):
 # Process complaint
 
 def process_complaint(text, location, image_path=None):
-    timestamp = datetime.datetime.utcnow().isoformat()
-    departments = classify_departments(text)
-    severity = get_severity_score(text)
-    summary = summarize_text(text)
-    contact_info = get_contact_info(departments)
-    suggestions = []
-    for dept in departments:
-        suggestions.extend(fetch_interim_suggestions(text, dept))
-    officer_brief = generate_officer_brief(summary, severity, departments)
+    while(True):
+        timestamp = datetime.datetime.utcnow().isoformat()
+        departments = classify_departments(text)
+        severity = get_severity_score(text)
+        summary = summarize_text(text)
+        contact_info = get_contact_info(departments)
+        suggestions = []
+        for dept in departments:
+            suggestions.extend(fetch_interim_suggestions(text, dept))
+        officer_brief = generate_officer_brief(summary, severity, departments)
+        if timestamp and departments and severity and summary and contact_info and suggestions:
+            break
 
     image_analysis = None
     if image_path and os.path.exists(image_path):
