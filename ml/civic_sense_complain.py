@@ -118,6 +118,8 @@ def process_complaint(text, location, image_path=None):
     complainer_txt += "Suggestions:\n"
     for s in suggestions:
         complainer_txt += f"  - {s}\n"
+    if "Health Ministry" in departments:
+        complainer_txt += "In the meantime, you can use the app's '/health-check/' feature to get an early diagnosis of the problem.\n"    
     if image_analysis:
         complainer_txt += f"Image Validation: {image_analysis}\n"
     complainer_txt += f"Timestamp: {timestamp}\nStatus: Pending\n\n"
