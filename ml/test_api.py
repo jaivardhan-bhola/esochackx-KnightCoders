@@ -3,7 +3,7 @@ import json
 import sys
 
 # Base URL for the Flask API
-BASE_URL = "http://localhost:5000"
+BASE_URL = "http://192.168.77.84:7122"
 
 def test_health_endpoint():
     """Test the health check endpoint"""
