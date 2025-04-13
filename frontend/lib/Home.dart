@@ -1,0 +1,694 @@
+import 'package:civicsense/MLApiCalls.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class Home extends StatefulWidget {
+  const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  TextEditingController _problemController = TextEditingController();
+  String _selectedLocation = 'Sitaburdi'; // Default location
+
+  final List<String> _locations = [
+    'Sitaburdi',
+    'Dharampet',
+    'IIIT Nagpur',
+    'Buttibori'
+  ];
+  final mlApi = MLApiService();
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    return Scaffold(
+        body: Stack(
+      children: [
+        Container(
+          height: screenHeight,
+          width: screenWidth,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF3D90D7), Color(0xFF3A59D1)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: screenHeight * 0.1),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(width: screenWidth * 0.05),
+                  CircleAvatar(
+                      child: Image.asset('assets/logo.png'),
+                      radius: screenHeight * 0.02),
+                  SizedBox(width: screenWidth * 0.05),
+                  Text(
+                    'CivicSense',
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.06,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(Icons.account_circle,
+                        color: Colors.white, size: screenWidth * 0.08),
+                    onPressed: () {
+                      // Handle notification button press
+                    },
+                  ),
+                  SizedBox(width: screenWidth * 0.02),
+                ],
+              ),
+              SizedBox(height: screenHeight * 0.04),
+              Image.asset('assets/bot.png', height: screenHeight * 0.22),
+              SizedBox(height: screenHeight * 0.01),
+              Container(
+                width: screenWidth,
+                height: screenHeight * 0.5,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(screenWidth * 0.05),
+                    topRight: Radius.circular(screenWidth * 0.05),
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: screenWidth * 0.05,
+                    right: screenWidth * 0.05,
+                    top: screenHeight * 0.02,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Describe your problem',
+                        style: GoogleFonts.instrumentSans(
+                          fontSize: screenWidth * 0.05,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.02),
+                      TextField(
+                        controller: _problemController,
+                        maxLines: null,
+                        minLines: 6,
+                        expands: false,
+                        decoration: InputDecoration(
+                          hintText: 'Enter your problem here',
+                          border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(screenWidth * 0.02),
+                            borderSide: BorderSide(color: Colors.grey),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.circular(screenWidth * 0.02),
+                            borderSide: BorderSide(color: Colors.blue),
+                          ),
+                        ),
+                        style: TextStyle(fontSize: screenWidth * 0.04),
+                      ),
+                      SizedBox(height: screenHeight * 0.02),
+                      Text(
+                        'Select location',
+                        style: GoogleFonts.instrumentSans(
+                          fontSize: screenWidth * 0.05,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.02),
+                      Container(
+                        width: screenWidth * 0.9,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius:
+                              BorderRadius.circular(screenWidth * 0.02),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.02),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: _selectedLocation,
+                              isExpanded: true,
+                              hint: Text('Select location'),
+                              items: _locations.map((String location) {
+                                return DropdownMenuItem<String>(
+                                  value: location,
+                                  child: Text(location),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                if (newValue != null) {
+                                  setState(() {
+                                    _selectedLocation = newValue;
+                                  });
+                                }
+                              },
+                              style: TextStyle(
+                                fontSize: screenWidth * 0.04,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.02),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              try {
+                                // Show loading indicator
+                                _showLoadingDialog(context);
+
+                                final result = await mlApi.processComplaint(
+                                  complaint: _problemController.text,
+                                  location: _selectedLocation,
+                                );
+
+                                // Hide loading indicator
+                                Navigator.pop(context);
+
+                                // Show response in bottom sheet
+                                _showResponseBottomSheet(
+                                    context, result['complainer_view']);
+                              } catch (e) {
+                                // Hide loading indicator
+                                Navigator.pop(context);
+
+                                // Show error message
+                                _showErrorSnackBar(context, 'Error: $e');
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF3A59D1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(screenWidth * 0.02),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                vertical: screenHeight * 0.015,
+                                horizontal: screenWidth * 0.1,
+                              ),
+                            ),
+                            child: Text(
+                              'Submit',
+                              style: TextStyle(
+                                fontSize: screenWidth * 0.05,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: screenWidth * 0.05),
+                          ElevatedButton(
+                              onPressed: () {
+                                // Handle file upload button press
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color(0xFF3A59D1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(screenWidth * 0.02),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                  vertical: screenHeight * 0.02,
+                                  horizontal: screenWidth * 0.05,
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.attach_file,
+                                color: Colors.white,
+                                size: screenWidth * 0.05,
+                              )),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
+    ));
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  void _showResponseBottomSheet(BuildContext context, String response) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+    // Parse the response text to extract relevant parts
+    Map<String, String> parsedData = _parseResponse(response);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
+      builder: (BuildContext context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.6,
+          minChildSize: 0.4,
+          maxChildSize: 0.85,
+          expand: false,
+          builder: (_, scrollController) {
+            return Container(
+              padding: EdgeInsets.all(screenWidth * 0.05),
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.assignment_turned_in,
+                                color: Color(0xFF3A59D1), size: screenWidth * 0.06),
+                            SizedBox(width: screenWidth * 0.02),
+                            Text(
+                              'Complaint Registered',
+                              style: TextStyle(
+                                fontSize: screenWidth * 0.05,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF3A59D1),
+                              ),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                    Divider(height: screenHeight * 0.02, thickness: 2),
+
+                    // Original Complaint
+                    _buildSectionWithIcon(
+                      Icons.description,
+                      'Complaint',
+                      parsedData['Original Complaint'] ?? 'Not available',
+                    ),
+
+                    // Location
+                    _buildSectionWithIcon(
+                      Icons.location_on,
+                      'Location',
+                      parsedData['Location'] ?? 'Not available',
+                    ),
+
+                    // Departments Forwarded
+                    _buildSectionWithIcon(
+                      Icons.forward_to_inbox,
+                      'Departments Forwarded',
+                      parsedData['Departments Forwarded'] ?? 'Not available',
+                    ),
+
+                    // Contact Details
+                    if (parsedData['Contact Details'] != null)
+                      _buildContactDetails(parsedData['Contact Details']!),
+
+                    // Suggestions
+                    if (parsedData['Suggestions'] != null)
+                      _buildSuggestionsList(parsedData['Suggestions']!),
+
+                    SizedBox(height: screenHeight * 0.02),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF3A59D1),
+                          padding: EdgeInsets.symmetric(
+                              horizontal:  screenWidth * 0.1,
+                              vertical: screenHeight * 0.015),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          'Close',
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildSectionWithIcon(IconData icon, String title, String content,
+      {bool includeBottomDivider = true}) {
+    // If content is empty, show a placeholder message
+    String displayContent =
+        content.isEmpty ? 'Information not available' : content;
+
+    // Format timestamp if the section is a timestamp
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, color: Color(0xFF3A59D1), size: 20),
+            SizedBox(width: 8),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 28, top: 8, bottom: 16),
+          child: Text(
+            displayContent,
+            style: TextStyle(
+              fontSize: 16.0,
+            ),
+          ),
+        ),
+        if (includeBottomDivider) Divider(height: 8),
+        SizedBox(height: 8),
+      ],
+    );
+  }
+
+  // Format ISO timestamp to human readable format
+  String _formatTimestamp(String timestamp) {
+    try {
+      // Remove any extra whitespace and trim the string
+      timestamp = timestamp.trim();
+
+      // Parse the timestamp
+      DateTime dateTime = DateTime.parse(timestamp);
+
+      // Format the date in a human-readable form
+      String formattedDate =
+          "${_getMonthName(dateTime.month)} ${dateTime.day}, ${dateTime.year}";
+
+      // Format the time with AM/PM
+      String period = dateTime.hour >= 12 ? "PM" : "AM";
+      int hour = dateTime.hour > 12
+          ? dateTime.hour - 12
+          : (dateTime.hour == 0 ? 12 : dateTime.hour);
+      String minute = dateTime.minute.toString().padLeft(2, '0');
+
+      return "$formattedDate at $hour:$minute $period";
+    } catch (e) {
+      // If parsing fails, return the original string
+      return timestamp;
+    }
+  }
+
+  // Helper method to get month name from month number
+  String _getMonthName(int month) {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+    return months[month - 1];
+  }
+
+  Widget _buildContactDetails(String contactDetails) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.contact_phone, color: Color(0xFF3A59D1), size: 20),
+            SizedBox(width: 8),
+            Text(
+              'Contact Details',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 28, top: 8, bottom: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: contactDetails.split('\n').map((line) {
+              if (line.trim().isEmpty) return SizedBox.shrink();
+
+              if (line.contains('Phone')) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.phone, size: 16, color: Colors.green),
+                      SizedBox(width: 8),
+                      Expanded(
+                          child: Text(line.trim(),
+                              style: TextStyle(fontSize: 16))),
+                    ],
+                  ),
+                );
+              } else if (line.contains('Email')) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    children: [
+                      Icon(Icons.email, size: 16, color: Colors.blue),
+                      SizedBox(width: 8),
+                      Expanded(
+                          child: Text(line.trim(),
+                              style: TextStyle(fontSize: 16))),
+                    ],
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(line.trim(),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                );
+              }
+            }).toList(),
+          ),
+        ),
+        Divider(height: 8),
+        SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _buildSuggestionsList(String suggestions) {
+    List<String> suggestionItems = [];
+    bool collectingItems = false;
+
+    for (String line in suggestions.split('\n')) {
+      String trimmedLine = line.trim();
+      if (trimmedLine.startsWith('*')) {
+        collectingItems = true;
+        suggestionItems.add(trimmedLine.substring(1).trim());
+      } else if (collectingItems &&
+          trimmedLine.isNotEmpty &&
+          !trimmedLine.startsWith('-')) {
+        // If we were collecting items and got a non-bullet line, add it to the last item
+        if (suggestionItems.isNotEmpty) {
+          suggestionItems[suggestionItems.length - 1] += ' ' + trimmedLine;
+        }
+      } else if (trimmedLine.startsWith('-') && trimmedLine.contains('*')) {
+        // Extract bullet points from lines starting with dash
+        String bulletContent =
+            trimmedLine.substring(trimmedLine.indexOf('*')).trim();
+        if (bulletContent.isNotEmpty) {
+          suggestionItems.add(bulletContent.substring(1).trim());
+        }
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.lightbulb_outline, color: Color(0xFF3A59D1), size: 20),
+            SizedBox(width: 8),
+            Text(
+              'Suggestions',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 28, top: 8, bottom: 8),
+          child: Text(
+            suggestions.split('\n').first.replaceAll('- ', '').trim(),
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 28, bottom: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: suggestionItems
+                .map((item) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.check_circle,
+                              size: 16, color: Colors.green),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              item,
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ))
+                .toList(),
+          ),
+        ),
+        if (suggestions.contains('In the meantime'))
+          Padding(
+            padding: const EdgeInsets.only(left: 28, bottom: 16),
+            child: Row(
+              children: [
+                Icon(Icons.info_outline, color: Colors.blue, size: 16),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    suggestions
+                        .split('\n')
+                        .where((line) => line.contains('In the meantime'))
+                        .first
+                        .trim(),
+                    style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        Divider(height: 8),
+        SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Map<String, String> _parseResponse(String response) {
+    Map<String, String> result = {};
+
+    // Initialize variables to store current section and its content
+    String currentSection = '';
+    String currentContent = '';
+    List<String> lines = response.split('\n');
+
+    for (int i = 0; i < lines.length; i++) {
+      String line = lines[i].trim();
+
+      if (line.startsWith('Original Complaint:')) {
+        if (currentSection.isNotEmpty) {
+          result[currentSection] = currentContent.trim();
+        }
+        currentSection = 'Original Complaint';
+        currentContent = line.substring('Original Complaint:'.length).trim();
+      } else if (line.startsWith('Location:')) {
+        if (currentSection.isNotEmpty) {
+          result[currentSection] = currentContent.trim();
+        }
+        currentSection = 'Location';
+        currentContent = line.substring('Location:'.length).trim();
+      } else if (line.startsWith('Departments Forwarded:')) {
+        if (currentSection.isNotEmpty) {
+          result[currentSection] = currentContent.trim();
+        }
+        currentSection = 'Departments Forwarded';
+        currentContent = line.substring('Departments Forwarded:'.length).trim();
+      } else if (line.startsWith('Contact Details:')) {
+        if (currentSection.isNotEmpty) {
+          result[currentSection] = currentContent.trim();
+        }
+        currentSection = 'Contact Details';
+        currentContent = '';
+      } else if (line.startsWith('Suggestions:')) {
+        if (currentSection.isNotEmpty) {
+          result[currentSection] = currentContent.trim();
+        }
+        currentSection = 'Suggestions';
+        currentContent = '';
+      } else if (line.startsWith('Timestamp:')) {
+        if (currentSection.isNotEmpty) {
+          result[currentSection] = currentContent.trim();
+        }
+        currentSection = 'Timestamp';
+        currentContent = line.substring('Timestamp:'.length).trim();
+      } else if (currentSection.isNotEmpty) {
+        // Add to current section
+        currentContent += (currentContent.isEmpty ? '' : '\n') + line;
+      }
+    }
+
+    // Add the last section
+    if (currentSection.isNotEmpty) {
+      result[currentSection] = currentContent.trim();
+    }
+
+    return result;
+  }
+
+  void _showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+}

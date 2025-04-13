@@ -1,3 +1,4 @@
+import 'package:civicsense/Home.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -403,7 +404,13 @@ class _LoginState extends State<Login> {
                                 ),
                                 SizedBox(height: screenHeight * 0.02),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.pushReplacement(context, 
+                                      MaterialPageRoute(
+                                        builder: (context) => Home(),
+                                      ),
+                                    );
+                                  },
                                   child: Text(
                                     'Login with Google',
                                     style: GoogleFonts.amaranth(

@@ -47,7 +47,6 @@ def test_analyze_post():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        # Run a specific test based on argument
         test_name = sys.argv[1].lower()
         print(f"Testing {test_name} endpoint...")
         if test_name == "health":
