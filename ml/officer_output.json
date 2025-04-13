@@ -1,0 +1,47 @@
+{
+    "timestamp": "2025-04-13T09:39:06.486278",
+    "severity": 2,
+    "summary": "A streetlight on Main Street is malfunctioning.",
+    "original_text": "There is a broken streetlight on Main Street",
+    "location": "Downtown",
+    "departments": [
+        "Electricity Board",
+        "Road Development"
+    ],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-13T09:42:00.931149",
+    "severity": 2,
+    "summary": "\"A streetlight on Main Street is malfunctioning.\"",
+    "original_text": "There is a broken streetlight on Main Street",
+    "location": "Downtown",
+    "departments": [
+        "Electricity Board",
+        "Road Development"
+    ],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-13T09:43:18.426531",
+    "severity": 5,
+    "summary": "A writer returns home to discover that their entire family has died due to dehydration caused by a severe water shortage.",
+    "original_text": "I waS OUT OF SAATTION AND WHEN I CAME BACK TO MY NHOUSEHOLD MY WHOLE FAMILY DDIES DUE TO DEHYDRATION, all beacause of the water shortage in my area.",
+    "location": "Downtown",
+    "departments": [
+        "Department of Water Resources",
+        "Health Ministry"
+    ],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-13T09:44:11.575007",
+    "severity": 5,
+    "summary": "The writer returned home to find their entire family had died from dehydration due to a severe water shortage in their area.",
+    "original_text": "I waS OUT OF SAATTION AND WHEN I CAME BACK TO MY NHOUSEHOLD MY WHOLE FAMILY DDIES DUE TO DEHYDRATION, all beacause of the water shortage in my area.",
+    "location": "Downtown",
+    "departments": [
+        "Health Ministry"
+    ],
+    "image_analysis": null
+},

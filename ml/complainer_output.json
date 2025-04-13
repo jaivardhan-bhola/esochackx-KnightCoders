@@ -1,0 +1,106 @@
+{
+    "departments_forwarded": [
+        "Electricity Board",
+        "Road Development"
+    ],
+    "contact_details": {
+        "Electricity Board": {
+            "phone": "1800-112-233",
+            "email": "power@civic.gov.in"
+        },
+        "Road Development": {
+            "phone": "1800-443-556",
+            "email": "roads@civic.gov.in"
+        }
+    },
+    "suggestions": [
+        "* Report the issue online through our website or mobile app to ensure prompt attention.",
+        "* Take a photo of the broken streetlight and provide a detailed description of the location to facilitate faster resolution.",
+        "* Contact our customer service center to schedule a visit by our maintenance team for repair or replacement.",
+        "Report the issue:",
+        "* Take a clear photo of the broken streetlight and note its location on Main Street.",
+        "* Report the issue to our department's customer service center or online portal.",
+        "Check for roadwork:",
+        "* Check if there are any ongoing roadwork or construction projects in the area that may be causing the issue.",
+        "* Contact our department's project management team to confirm if the streetlight is part of an active project.",
+        "Contact local authorities:",
+        "* Reach out to the local police department or community watch to report the issue and ensure public safety.",
+        "* Inform them that you have reported the issue to our department and are waiting for a resolution."
+    ],
+    "timestamp": "2025-04-13T09:39:06.486278",
+    "image_analysis": null
+},
+{
+    "departments_forwarded": [
+        "Electricity Board",
+        "Road Development"
+    ],
+    "contact_details": {
+        "Electricity Board": {
+            "phone": "1800-112-233",
+            "email": "power@civic.gov.in"
+        },
+        "Road Development": {
+            "phone": "1800-443-556",
+            "email": "roads@civic.gov.in"
+        }
+    },
+    "suggestions": [
+        "* Report the issue to our online portal or mobile app to register a complaint and track its status.",
+        "* Provide a detailed description of the issue, including the location and exact spot where the streetlight is broken.",
+        "* Take a photo of the broken streetlight as evidence and attach it to the complaint to help our maintenance team assess the situation more efficiently.",
+        "Report the issue to our online portal or mobile app to ensure swift attention.",
+        "Provide a detailed description of the broken streetlight, including its location and any relevant photos.",
+        "Wait for our team to inspect and repair the streetlight, which will be done as soon as possible.",
+        "Follow up on the status of the repair by contacting our customer service number or checking the online portal."
+    ],
+    "timestamp": "2025-04-13T09:42:00.931149",
+    "image_analysis": null
+},
+{
+    "departments_forwarded": [
+        "Department of Water Resources",
+        "Health Ministry"
+    ],
+    "contact_details": {
+        "Department of Water Resources": {
+            "phone": "1800-221-445",
+            "email": "water@civic.gov.in"
+        },
+        "Health Ministry": {
+            "phone": "1800-777-999",
+            "email": "health@civic.gov.in"
+        }
+    },
+    "suggestions": [
+        "* Provide bottled water to the affected family until the water supply issue is resolved.",
+        "* Conduct an urgent investigation to identify the cause of the water shortage and take necessary measures to prevent such incidents in the future.",
+        "* Assist the family in applying for compensation or relief from the government, if eligible, for the loss they have incurred due to the water shortage.",
+        "* Provide regular updates to the family on the progress of the investigation and the steps being taken to resolve the issue.",
+        "Provide medical attention to your surviving family members at the earliest opportunity.",
+        "Contact your local water utility provider to report the issue and seek compensation for the loss you have suffered.",
+        "Document the incident and gather evidence, including photographic and video footage, to support your claim for compensation.",
+        "Seek emotional support and counseling services from a qualified mental health professional to cope with the trauma and grief of losing your family members."
+    ],
+    "timestamp": "2025-04-13T09:43:18.426531",
+    "image_analysis": null
+},
+{
+    "departments_forwarded": [
+        "Health Ministry"
+    ],
+    "contact_details": {
+        "Health Ministry": {
+            "phone": "1800-777-999",
+            "email": "health@civic.gov.in"
+        }
+    },
+    "suggestions": [
+        "* Provide bottled water or a temporary water source to the affected family",
+        "* Conduct a thorough investigation to identify the root cause of the water shortage and take necessary measures to rectify it",
+        "* Offer counseling and medical support to the family members who were affected by dehydration",
+        "* Work with local authorities to provide compensation to the family for their loss"
+    ],
+    "timestamp": "2025-04-13T09:44:11.575007",
+    "image_analysis": null
+},
