@@ -97,4 +97,4 @@ if __name__ == '__main__':
         print("Deepfake model loaded successfully.")
     
     # Run Flask server
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=7122, debug=True)
