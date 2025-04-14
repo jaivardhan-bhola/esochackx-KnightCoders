@@ -107,12 +107,21 @@ def validate_image_with_llama(image_path, complaint_text):
             # Only send the first 1000 chars of base64 to reduce token usage
             shortened_base64 = img_base64[:1000]
             
-            print(f"LLM response received: {response[:100]}...")
-            return response
+            prompt = f"A citizen has filed the following complaint: \"{complaint_text}\". I've attached an image as evidence. Does this image appear to be relevant to the complaint? Give a brief assessment (2-3 sentences max). Base64 Image excerpt: {shortened_base64}..."
+
+            print("Sending prompt to LLM for image analysis...")
+            try:
+                response_obj = llm.invoke(prompt)
+                response_text = response_obj.content.strip()
+                print(f"LLM response received: {response_text[:100]}...")
+                return response_text
+            except Exception as inner_e:
+                print(f"Error in LLM invocation: {inner_e}")
+                return "Image received but couldn't be analyzed with AI. Your complaint has been registered."
+                
         except Exception as e:
             print(f"Error during LLM processing: {str(e)}")
             print(traceback.format_exc())
-            # Return a fallback message during development to allow the flow to continue
             return f"Image received but couldn't be analyzed with AI: {str(e)}. Proceeding with complaint."
     except Exception as e:
         print(f"Unexpected error in validate_image_with_llama: {str(e)}")

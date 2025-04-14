@@ -153,3 +153,69 @@
     ],
     "image_analysis": "A visual assessment!\n\nBased on the provided image excerpt, I would say that it appears to be a photograph of a road, but it's not entirely clear what specifically is broken about it. The image seems to show a road with some cracks and uneven pavement, but it's not obvious what the exact issue is. Without seeing the full image or more context, it's difficult to determine whether this image is directly relevant to the complaint of a broken road."
 },
+{
+    "timestamp": "2025-04-14T15:44:26.481615",
+    "severity": 3,
+    "summary": "The road is damaged and requires repair.",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": "Image received but couldn't be analyzed with AI: name 'response' is not defined. Proceeding with complaint."
+},
+{
+    "timestamp": "2025-04-14T15:47:45.510390",
+    "severity": 3,
+    "summary": "\"The road is damaged and requires maintenance.\"",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": "Based on the provided image excerpt, it appears that the image is a photograph of a road, but it does not provide clear evidence of the road being broken. The image appears to be a generic road scene, and it's difficult to determine from this small excerpt whether the road is indeed broken or not."
+},
+{
+    "timestamp": "2025-04-14T15:49:57.726422",
+    "severity": 3,
+    "summary": "The road is in disrepair.",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": "Based on the provided image excerpt, it appears to be a road image, but it's unclear whether it shows a broken road or not. The image is incomplete and doesn't provide a clear view of the road surface, making it difficult to assess the relevance of the complaint."
+},
+{
+    "timestamp": "2025-04-14T15:50:57.207494",
+    "severity": 3,
+    "summary": "The road is in disrepair and requires maintenance.",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": "Based on the provided image, it appears to be a photo of a road, but it's unclear how relevant it is to the complaint \"Road is broken\". The image could potentially be a snapshot of a pothole or a cracked asphalt, but without more context or information, it's difficult to determine if the image specifically shows a broken road that is causing harm or inconvenience to the citizen. Further investigation is necessary to determine the relevance of the image to the complaint."
+},
+{
+    "timestamp": "2025-04-14T15:54:16.995985",
+    "severity": 2,
+    "summary": "The road is in a state of disrepair.",
+    "original_text": "Road is broke",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": "Based on the provided image excerpt, it appears to be a picture of a road, but it's unclear whether it's relevant to the complaint \"Road is broke\". The image quality is poor, and without seeing the full image, it's difficult to determine if the road is actually broken or if there are any issues with the surface, cracks, or other defects. Without more context or a clearer image, it's impossible to say for certain whether the image is relevant to the complaint."
+},
+{
+    "timestamp": "2025-04-14T15:59:45.811488",
+    "severity": 2,
+    "summary": "\"The road is damaged and requires repair.\"",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": "Based on the provided image excerpt, it appears to be a photograph of a road, but it's unclear whether the road is broken or not. The image is blurry and doesn't provide a clear view of the road's condition."
+},
