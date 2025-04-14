@@ -1,6 +1,8 @@
 import 'package:civicsense/MLApiCalls.dart';
 import 'package:civicsense/Profile.dart';
 import 'package:civicsense/chatbot.dart';
+import 'package:civicsense/posts.dart';
+import 'package:civicsense/widgets/parallelogram_shape.dart'; // Import the custom shape
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -83,25 +85,24 @@ class _HomeState extends State<Home> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           actions: [
-             IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Profile(),
-                              ),
-                            );
-                          },
-                          icon: Icon(Icons.person,
-                              color: Colors.white, size: screenWidth * 0.08)),
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Profile(),
+                    ),
+                  );
+                },
+                icon: Icon(Icons.person,
+                    color: Colors.white, size: screenWidth * 0.08)),
           ],
           title: Row(
             children: [
               CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: screenWidth * 0.05,
-              backgroundImage: AssetImage('assets/logo.png')
-              ),
+                  backgroundColor: Colors.white,
+                  radius: screenWidth * 0.05,
+                  backgroundImage: AssetImage('assets/logo.png')),
               SizedBox(width: screenWidth * 0.02),
               Text(
                 'CivicSense',
@@ -113,6 +114,23 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
+        // Replace FloatingActionButton with our custom ParallelogramButton
+        floatingActionButton: ParallelogramButton(
+          color: Color(0xFF71B340),
+          width: 60,
+          height: 50,
+          skewAmount: 12.0,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Chatbot(),
+              ),
+            );
+          },
+          child: Icon(Icons.chat_rounded, color: Colors.white),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         body: Stack(
           children: [
             Container(
@@ -129,11 +147,10 @@ class _HomeState extends State<Home> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: screenHeight * 0.15),
-                  Image.asset('assets/bot.png', height: screenHeight * 0.22),
-                  SizedBox(height: screenHeight * 0.01),
+                  Image.asset('assets/bot.png', height: screenHeight * 0.235),
                   Container(
                     width: screenWidth,
-                    height: screenHeight * 0.545,
+                    height: screenHeight * 0.552,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
@@ -408,21 +425,17 @@ class _HomeState extends State<Home> {
                               color: Colors.white, size: screenWidth * 0.1)),
                       SizedBox(width: screenWidth * 0.05),
                       IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.feed_rounded,
-                              color: Colors.white, size: screenWidth * 0.1)),
-                      SizedBox(width: screenWidth * 0.05),
-                      IconButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Chatbot(),
+                                builder: (context) => Posts(),
                               ),
                             );
                           },
-                          icon: Icon(Icons.chat_rounded,
-                              color: Colors.white, size: screenWidth * 0.1)),                     
+                          icon: Icon(Icons.feed_rounded,
+                              color: Colors.white, size: screenWidth * 0.1)),
+                      SizedBox(width: screenWidth * 0.05),
                     ],
                   )
                 ],

@@ -1,7 +1,8 @@
-import 'package:civicsense/MLApiCalls.dart';
+import 'package:civicsense/Posts.dart';
 import 'package:civicsense/Profile.dart';
 import 'package:civicsense/chatbot.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart' as DotEnv;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -37,7 +38,6 @@ class _OfficialhomeState extends State<Officialhome> {
 
       setState(() {
         complaints = fetchedComplaints;
-        print(fetchedComplaints[0]);
         isLoading = false;
       });
     } catch (e) {
@@ -128,10 +128,10 @@ class _OfficialhomeState extends State<Officialhome> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: screenHeight * 0.15),
+                  SizedBox(height: screenHeight * 0.12),
                   Container(
                     width: screenWidth,
-                    height: screenHeight * 0.78,
+                    height: screenHeight * 0.818,
                     decoration: BoxDecoration(
                       color: Colors.white,
                     ),
@@ -243,7 +243,14 @@ class _OfficialhomeState extends State<Officialhome> {
                               color: Colors.white, size: screenWidth * 0.1)),
                       SizedBox(width: screenWidth * 0.05),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Posts(),
+                              ),
+                            );
+                          },
                           icon: Icon(Icons.feed_rounded,
                               color: Colors.white, size: screenWidth * 0.1)),
                       SizedBox(width: screenWidth * 0.05),
@@ -318,6 +325,13 @@ class _OfficialhomeState extends State<Officialhome> {
     final department = attributes['Department'] ?? 'Unknown department';
     final location = attributes['Location'] ?? 'Unknown location';
 
+    // Handle image data
+    List<dynamic>? images;
+    if (attributes['image'] != null) {
+      // Make sure we're treating 'image' as a list of objects rather than trying to cast it
+      images = attributes['image'] as List<dynamic>;
+    }
+
     // Parse the date from createdAt
     DateTime? createdDate;
     try {
@@ -384,6 +398,81 @@ class _OfficialhomeState extends State<Officialhome> {
                   style: TextStyle(fontSize: screenWidth * 0.035),
                   softWrap: true,
                 ),
+
+                // Display complaint image if available
+                if (images != null && images.isNotEmpty) ...[
+                  SizedBox(height: 16),
+                  Text(
+                    'Attached Image:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWidth * 0.04,
+                      color: Color(0xFF3A59D1),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    height: screenHeight * 0.2,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: images.length,
+                      itemBuilder: (context, index) {
+                        final image = images![index];
+                        String? imageUrl;
+                        imageUrl = image['formats']['small']['url'] ??
+                            image['formats']['thumbnail']['url'] ??
+                            image['formats']['large']['url'] ??
+                            image['formats']['medium']['url'];
+                        imageUrl =
+                             'http://${DotEnv.dotenv.env['HOST']}:${DotEnv.dotenv.env['PORT']}${imageUrl}'; // Use the server URL from .env
+                        return Padding(
+                          padding: EdgeInsets.only(right: 8),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return Container(
+                                  width: screenWidth * 0.4,
+                                  height: screenHeight * 0.2,
+                                  color: Colors.grey[200],
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      value: loadingProgress
+                                                  .expectedTotalBytes !=
+                                              null
+                                          ? loadingProgress
+                                                  .cumulativeBytesLoaded /
+                                              (loadingProgress
+                                                      .expectedTotalBytes ??
+                                                  1)
+                                          : null,
+                                    ),
+                                  ),
+                                );
+                              },
+                              errorBuilder: (context, error, stackTrace) {
+                                print('Error loading image: $error');
+                                return Container(
+                                  width: screenWidth * 0.4,
+                                  color: Colors.grey[200],
+                                  child: Center(
+                                    child: Icon(Icons.broken_image, size: 40),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      
+                      },
+                    ),
+                  ),
+                ],
+
                 SizedBox(height: 16),
                 // Department row
                 Padding(

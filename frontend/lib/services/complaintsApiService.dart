@@ -17,7 +17,9 @@ class ComplaintsApiService {
       'Authorization': 'Bearer $token'
     };
 
-    var url = Uri.http(server_url, '/api/complaints');
+    var url = Uri.http(server_url, '/api/complaints', {
+      'populate': '*',
+    });
 
     var response = await client.get(
       url,
