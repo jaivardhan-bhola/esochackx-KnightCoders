@@ -5,6 +5,7 @@ import 'package:civicsense/Login.dart';
 import 'package:civicsense/Home.dart';
 import 'package:civicsense/services/userApiService.dart';
 import 'package:civicsense/chatbot.dart';
+import 'package:civicsense/complaints_tracker.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -60,7 +61,7 @@ class _ProfileState extends State<Profile> {
 
       // Update local storage
       box.put('name', _nameController.text);
-      box.put('email', _emailController.text);
+      box.put('email', _nameController.text);
       box.put('phone', _nameController.text);
 
       // Hide loading indicator and toggle edit mode
@@ -325,6 +326,20 @@ class _ProfileState extends State<Profile> {
 
                             // Actions
                             if (!_isEditing) ...[
+                              if (userType == "Citizen") ...[
+                                _buildActionTile(
+                                  icon: Icons.report_problem,
+                                  title: "Track Complaints",
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              ComplaintsTracker()),
+                                    );
+                                  },
+                                ),
+                              ],
                               _buildActionTile(
                                 icon: Icons.lock,
                                 title: "Change Password",
@@ -431,7 +446,6 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                 ),
-               
               ],
             ),
           ),

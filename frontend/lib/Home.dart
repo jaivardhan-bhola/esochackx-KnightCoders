@@ -20,13 +20,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   TextEditingController _problemController = TextEditingController();
-  String _selectedLocation = 'Sitaburdi'; // Default location
+  String _selectedLocation = 'Sitabuldi'; // Default location
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
   var box = Hive.box('appBox');
 
   final List<String> _locations = [
-    'Sitaburdi',
+    'Sitabuldi',
     'Dharampet',
     'IIIT Nagpur',
     'Buttibori'

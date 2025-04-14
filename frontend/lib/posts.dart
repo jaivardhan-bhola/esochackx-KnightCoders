@@ -43,14 +43,14 @@ class _PostsState extends State<Posts> {
 
     try {
       final fetchedPosts = await PostApiService.getPosts();
-      
+
       // Sort posts by creation date (newest first)
       fetchedPosts.sort((a, b) {
         DateTime dateA = DateTime.parse(a['createdAt']);
         DateTime dateB = DateTime.parse(b['createdAt']);
-        return dateB.compareTo(dateA);  // Descending order (newest first)
+        return dateB.compareTo(dateA); // Descending order (newest first)
       });
-      
+
       setState(() {
         posts = fetchedPosts;
         isLoading = false;
@@ -390,17 +390,17 @@ class _PostsState extends State<Posts> {
           ],
         ),
       ),
-       floatingActionButton: ParallelogramButton(
-          color: Color(0xFF71B340),
-          width: 60,
-          height: 50,
-          skewAmount: 12.0,
-          onPressed: () {
-            _showCreatePostSheet();
-          },
-          child: Icon(Icons.add, color: Colors.white),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: ParallelogramButton(
+        color: Color(0xFF71B340),
+        width: 60,
+        height: 50,
+        skewAmount: 12.0,
+        onPressed: () {
+          _showCreatePostSheet();
+        },
+        child: Icon(Icons.add, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Stack(
         children: [
           Container(
@@ -487,106 +487,289 @@ class _PostsState extends State<Posts> {
                                       final post = posts[index];
                                       final user =
                                           post['users_permissions_user'];
-                                        final media = post['media'] != null && post['media'].isNotEmpty ? post['media'][0]['formats']['thumbnail'] : null;
-                                     
+                                      final media = post['media'] != null &&
+                                              post['media'].isNotEmpty
+                                          ? post['media'][0]['formats']
+                                              ['thumbnail']
+                                          : null;
 
                                       return Card(
-                                        elevation: 3,
+                                        elevation: 4,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(15),
+                                              BorderRadius.circular(16),
+                                          side: BorderSide(
+                                            color: Color(0xFF3A59D1)
+                                                .withOpacity(0.1),
+                                            width: 1,
+                                          ),
                                         ),
-                                        margin: EdgeInsets.only(bottom: 16),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            ListTile(
-                                              leading: CircleAvatar(
-                                                backgroundColor:
-                                                    Color(0xFF3A59D1),
-                                                child: user != null
-                                                    ? Text(
-                                                        user['username']?[0]
-                                                                ?.toUpperCase() ??
-                                                            'U',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white),
-                                                      )
-                                                    : Icon(Icons.person,
-                                                        color: Colors.white),
-                                              ),
-                                              title: Text(
-                                                user['username']!,
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
+                                        margin: EdgeInsets.only(bottom: 20),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white,
+                                                Color(0xFFF5F7FF)
+                                              ],
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.all(14),
+                                                child: Row(
+                                                  children: [
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Color(
+                                                                    0xFF3A59D1)
+                                                                .withOpacity(
+                                                                    0.2),
+                                                            blurRadius: 8,
+                                                            offset:
+                                                                Offset(0, 2),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: CircleAvatar(
+                                                        backgroundColor:
+                                                            Color(0xFF3A59D1),
+                                                        radius: 22,
+                                                        child: user != null
+                                                            ? Text(
+                                                                user['username']
+                                                                            ?[0]
+                                                                        ?.toUpperCase() ??
+                                                                    'U',
+                                                                style: GoogleFonts
+                                                                    .instrumentSans(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 18,
+                                                                ),
+                                                              )
+                                                            : Icon(Icons.person,
+                                                                color: Colors
+                                                                    .white),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 12),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            user['username']!,
+                                                            style: GoogleFonts
+                                                                .instrumentSans(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                              color: Color(
+                                                                  0xFF3A59D1),
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 4),
+                                                          Container(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                              horizontal: 8,
+                                                              vertical: 3,
+                                                            ),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: Colors
+                                                                  .amber
+                                                                  .withOpacity(
+                                                                      0.1),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                              border:
+                                                                  Border.all(
+                                                                color: Colors
+                                                                    .amber
+                                                                    .withOpacity(
+                                                                        0.3),
+                                                                width: 1,
+                                                              ),
+                                                            ),
+                                                            child: Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .access_time_rounded,
+                                                                    size: 12,
+                                                                    color: Colors
+                                                                            .amber[
+                                                                        700]),
+                                                                SizedBox(
+                                                                    width: 4),
+                                                                Text(
+                                                                  _getTimeAgo(post[
+                                                                      'createdAt']),
+                                                                  style: GoogleFonts
+                                                                      .instrumentSans(
+                                                                    fontSize:
+                                                                        11,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    color: Colors
+                                                                            .amber[
+                                                                        700],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              subtitle: Text(
-                                                _getTimeAgo(post['createdAt']),
-                                                style: TextStyle(fontSize: 12),
-                                              ),
-                                              trailing: Icon(Icons.more_vert),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 16,
-                                                vertical: 8,
-                                              ),
-                                              child: Text(
-                                                post['title'],
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
                                               Padding(
                                                 padding: EdgeInsets.symmetric(
                                                   horizontal: 16,
                                                   vertical: 4,
                                                 ),
                                                 child: Text(
-                                                  post['description'],
-                                                  style:
-                                                      TextStyle(fontSize: 16),
+                                                  post['title'],
+                                                  style: GoogleFonts
+                                                      .instrumentSans(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.black87,
+                                                  ),
                                                 ),
                                               ),
-                                            if (media != null)
-                                              Container(
-                                                width: screenWidth,
-                                                margin: EdgeInsets.only(top: 8),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.vertical(
-                                                    bottom: Radius.circular(4),
+                                              if (post['description'] != null &&
+                                                  post['description']
+                                                      .toString()
+                                                      .isNotEmpty)
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 16,
+                                                    vertical: 8,
                                                   ),
-                                                  child: Image.network(
-                                                    'http://${PostApiService.server_url}${media['url']}',
-                                                    fit: BoxFit.cover,
-                                                    height: 200,
-                                                    width: double.infinity,
-                                                    errorBuilder: (context,
-                                                            error,
-                                                            stackTrace) =>
-                                                        Container(
-                                                      height: 200,
-                                                      color: Colors.grey[200],
-                                                      child: Center(
-                                                        child: Icon(
-                                                          Icons.broken_image,
-                                                          size: 64,
+                                                  child: Text(
+                                                    post['description'],
+                                                    style: GoogleFonts
+                                                        .instrumentSans(
+                                                      fontSize: 15,
+                                                      color: Colors.black87
+                                                          .withOpacity(0.8),
+                                                      height: 1.4,
+                                                    ),
+                                                  ),
+                                                ),
+                                              if (media != null)
+                                                Container(
+                                                  width: screenWidth,
+                                                  margin:
+                                                      EdgeInsets.only(top: 8),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.vertical(
+                                                      bottom:
+                                                          Radius.circular(16),
+                                                    ),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.1),
+                                                            blurRadius: 8,
+                                                            offset:
+                                                                Offset(0, 3),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: Image.network(
+                                                        'http://${PostApiService.server_url}${media['url']}',
+                                                        fit: BoxFit.cover,
+                                                        height: 220,
+                                                        width: double.infinity,
+                                                        errorBuilder: (context,
+                                                                error,
+                                                                stackTrace) =>
+                                                            Container(
+                                                          height: 220,
                                                           color:
-                                                              Colors.grey[400],
+                                                              Colors.grey[100],
+                                                          child: Center(
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                Icon(
+                                                                  Icons
+                                                                      .broken_image_rounded,
+                                                                  size: 48,
+                                                                  color: Colors
+                                                                          .grey[
+                                                                      400],
+                                                                ),
+                                                                SizedBox(
+                                                                    height: 8),
+                                                                Text(
+                                                                  'Image not available',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                            .grey[
+                                                                        600],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
                                                   ),
+                                                )
+                                              else
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                    left: 16,
+                                                    right: 16,
+                                                    bottom: 16,
+                                                    top: 8,
+                                                  ),
+                                                  child: Divider(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2),
+                                                    thickness: 1,
+                                                  ),
                                                 ),
-                                              ),
-                                          ],
+                                             
+                                                ],
+                                          ),
                                         ),
                                       );
                                     },
@@ -601,21 +784,20 @@ class _PostsState extends State<Posts> {
                         onPressed: () {
                           var userType = box.get('type');
                           if (userType == 'Official')
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Officialhome(),
-                            ),
-                          );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Officialhome(),
+                              ),
+                            );
                           else
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Home(),
-                            ),
-                          );
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Home(),
+                              ),
+                            );
                         },
-
                         icon: Icon(Icons.home_rounded,
                             color: Colors.white, size: screenWidth * 0.1)),
                     SizedBox(width: screenWidth * 0.05),
@@ -625,17 +807,17 @@ class _PostsState extends State<Posts> {
                             color: Colors.white, size: screenWidth * 0.1)),
                     SizedBox(width: screenWidth * 0.05),
                     if (box.get('type') == 'Citizen')
-                    IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HealthCheck(),
-                            ),
-                          );
-                        },
-                        icon: Icon(Icons.medical_services_rounded,
-                            color: Colors.white, size: screenWidth * 0.1)),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HealthCheck(),
+                              ),
+                            );
+                          },
+                          icon: Icon(Icons.medical_services_rounded,
+                              color: Colors.white, size: screenWidth * 0.1)),
                     SizedBox(width: screenWidth * 0.05),
                   ],
                 )

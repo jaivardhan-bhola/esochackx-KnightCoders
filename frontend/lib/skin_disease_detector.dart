@@ -168,7 +168,7 @@ class _SkinDiseaseDetectorState extends State<SkinDiseaseDetector> {
                             SizedBox(width: screenWidth * 0.02),
                             Text(
                               'Diagnosis Results',
-                              style: TextStyle(
+                              style: GoogleFonts.instrumentSans(
                                 fontSize: screenWidth * 0.05,
                                 fontWeight: FontWeight.bold,
                                 color: Color(0xFF3A59D1),
@@ -186,6 +186,7 @@ class _SkinDiseaseDetectorState extends State<SkinDiseaseDetector> {
 
                     // Detected Condition
                     _buildSectionWithIcon(
+                      context,
                       Icons.coronavirus,
                       'Detected Condition',
                       _prediction ?? 'Unknown',
@@ -195,6 +196,7 @@ class _SkinDiseaseDetectorState extends State<SkinDiseaseDetector> {
                     // Symptoms
                     if (_symptoms != null)
                       _buildSectionWithIcon(
+                        context,
                         Icons.sick_outlined,
                         'Symptoms',
                         _symptoms!,
@@ -203,6 +205,7 @@ class _SkinDiseaseDetectorState extends State<SkinDiseaseDetector> {
                     // Treatment
                     if (_treatment != null)
                       _buildSectionWithIcon(
+                        context,
                         Icons.medical_services_outlined,
                         'Treatment Options',
                         _treatment!,
@@ -211,6 +214,7 @@ class _SkinDiseaseDetectorState extends State<SkinDiseaseDetector> {
                     // Prevention
                     if (_prevention != null)
                       _buildSectionWithIcon(
+                        context,
                         Icons.health_and_safety_outlined,
                         'Prevention Methods',
                         _prevention!,
@@ -259,7 +263,11 @@ class _SkinDiseaseDetectorState extends State<SkinDiseaseDetector> {
                         ),
                         child: Text(
                           'Close',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          style: GoogleFonts.instrumentSans(
+                            fontSize: 16, 
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -273,54 +281,68 @@ class _SkinDiseaseDetectorState extends State<SkinDiseaseDetector> {
     );
   }
 
-  Widget _buildSectionWithIcon(IconData icon, String title, String content, {double? confidence}) {
-    // Format content if needed
-    String displayContent = content;
-
+  Widget _buildSectionWithIcon(BuildContext context, IconData icon, String title, String content, {double? confidence}) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, color: Color(0xFF3A59D1), size: 20),
-            SizedBox(width: 8),
+            Icon(icon, color: Color(0xFF3A59D1), size: screenWidth * 0.05),
+            SizedBox(width: screenWidth * 0.02),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 18.0,
+              style: GoogleFonts.instrumentSans(
+                fontSize: screenWidth * 0.045,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 28, top: 8, bottom: 8),
+          padding: EdgeInsets.only(
+            left: screenWidth * 0.07, 
+            top: screenWidth * 0.02, 
+            bottom: screenWidth * 0.01
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                displayContent,
+                content,
                 style: TextStyle(
-                  fontSize: 16.0,
+                  fontSize: screenWidth * 0.04,
                   fontWeight: title == 'Detected Condition' ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
               if (confidence != null) 
                 Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Text(
-                    'Confidence Level: ${(confidence * 100).toStringAsFixed(2)}%',
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.grey.shade700,
+                  padding: EdgeInsets.only(top: screenWidth * 0.01),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.02,
+                      vertical: screenWidth * 0.01,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF3A59D1).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(screenWidth * 0.01),
+                    ),
+                    child: Text(
+                      'Confidence Level: ${(confidence * 100).toStringAsFixed(2)}%',
+                      style: TextStyle(
+                        fontSize: screenWidth * 0.035,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF3A59D1),
+                      ),
                     ),
                   ),
                 ),
             ],
           ),
         ),
-        Divider(height: 8),
-        SizedBox(height: 8),
+        Divider(height: screenWidth * 0.04, thickness: 1),
+        SizedBox(height: screenWidth * 0.01),
       ],
     );
   }
@@ -335,6 +357,7 @@ class _SkinDiseaseDetectorState extends State<SkinDiseaseDetector> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
             CircleAvatar(

@@ -26,10 +26,17 @@ class _LoginState extends State<Login> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-        body: Stack(
-      children: [
-        Image.asset('assets/bg.png'),
-        Column(
+        body: Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/bg.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: SingleChildScrollView(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: screenHeight * 0.06),
@@ -494,7 +501,7 @@ class _LoginState extends State<Login> {
             ),
           ],
         ),
-      ],
+      ),
     ));
   }
 }

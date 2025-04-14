@@ -67,7 +67,7 @@ class ComplaintsApiService {
     File? imageFile,
     int? userId,
     String? imageValidation,
-    String? imageAnalysis, 
+    String? imageAnalysis,
   }) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
@@ -234,18 +234,29 @@ class ComplaintsApiService {
       'Authorization': 'Bearer $token'
     };
 
-    var url = Uri.parse(
-        '$server_url/api/complaints?filters[users_permissions_user][id][eq]=$userId');
+    // Fix the URI formation using proper parameters
+    var url = Uri.http(server_url, '/api/complaints', {
+      'filters[users_permissions_user][id][\$eq]': userId.toString(),
+      'populate': '*'
+    });
 
-    var response = await client.get(
-      url,
-      headers: requestHeaders,
-    );
-
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      return data['data'];
-    } else {
+    try {
+      var response = await client.get(
+        url,
+        headers: requestHeaders,
+      );
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data == null || data['data'] == null) {
+          return [];
+        }
+        return data['data'];
+      } else {
+        print('Failed to fetch complaints: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('Error fetching user complaints: $e');
       return [];
     }
   }

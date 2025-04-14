@@ -259,7 +259,7 @@ class _OfficialhomeState extends State<Officialhome> {
                           },
                           icon: Icon(Icons.feed_rounded,
                               color: Colors.white, size: screenWidth * 0.1)),
-                      SizedBox(width: screenWidth * 0.1),
+                      SizedBox(width: screenWidth * 0.05),
                     ],
                   )
                 ],
@@ -269,7 +269,9 @@ class _OfficialhomeState extends State<Officialhome> {
               Container(
                 color: Colors.black.withOpacity(0.3),
                 child: Center(
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF3A59D1)),
+                  ),
                 ),
               ),
           ],
