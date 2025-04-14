@@ -45,3 +45,111 @@
     ],
     "image_analysis": null
 },
+{
+    "timestamp": "2025-04-14T15:08:46.547226",
+    "severity": 3,
+    "summary": "The road is in disrepair.",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-14T15:10:36.428411",
+    "severity": 3,
+    "summary": "The road is closed due to damage.",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-14T15:10:59.816538",
+    "severity": 2,
+    "summary": "The road is in disrepair.",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-14T15:12:25.226606",
+    "severity": 3,
+    "summary": "The road is in disrepair.",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-14T15:13:45.399279",
+    "severity": 3,
+    "summary": "I apologize, but there is no text to summarize!",
+    "original_text": "Image",
+    "location": "Sitaburdi",
+    "departments": [
+        "Sanitation"
+    ],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-14T15:17:36.886344",
+    "severity": 1,
+    "summary": "The summary is a brief greeting.",
+    "original_text": "Hello",
+    "location": "Sitaburdi",
+    "departments": [
+        "Sanitation"
+    ],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-14T15:22:02.813532",
+    "severity": 1,
+    "summary": "A simple greeting is being expressed.",
+    "original_text": "Hello",
+    "location": "Sitaburdi",
+    "departments": [],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-14T15:25:58.772097",
+    "severity": 3,
+    "summary": "The road is in disrepair.",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-14T15:31:53.767577",
+    "severity": 3,
+    "summary": "The road is in disrepair.",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": null
+},
+{
+    "timestamp": "2025-04-14T15:35:33.146868",
+    "severity": 3,
+    "summary": "The road is in poor condition due to damage and disrepair.",
+    "original_text": "Road is broken",
+    "location": "Sitaburdi",
+    "departments": [
+        "Road Development"
+    ],
+    "image_analysis": "A visual assessment!\n\nBased on the provided image excerpt, I would say that it appears to be a photograph of a road, but it's not entirely clear what specifically is broken about it. The image seems to show a road with some cracks and uneven pavement, but it's not obvious what the exact issue is. Without seeing the full image or more context, it's difficult to determine whether this image is directly relevant to the complaint of a broken road."
+},

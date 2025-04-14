@@ -99,8 +99,6 @@ class ComplaintsApiService {
         headers: requestHeaders,
         body: payload,
       );
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
 
       return response.statusCode == 200;
     } catch (e) {
@@ -192,17 +190,11 @@ class ComplaintsApiService {
     });
 
     try {
-      print('Updating complaint at URL: ${url.toString()}');
-      print('Payload: $payload');
-      print('Using documentId: $id');
-
       var response = await client.put(
         url,
         headers: requestHeaders,
         body: payload,
       );
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
       return response.statusCode == 200;
     } catch (e) {
       print('Error updating complaint: $e');

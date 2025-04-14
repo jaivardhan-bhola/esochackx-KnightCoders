@@ -39,31 +39,82 @@ class MLApiService {
     File? imageFile,
   }) async {
     try {
-      // Prepare the payload
-      final payload = {
-        'complaint': complaint,
-        'location': location,
-        
-      };
-
-      // If an image is provided, add its path to the payload
+      // For sending multipart request when an image is included
       if (imageFile != null) {
-        String imagePath = await uploadImage(imageFile);
-        payload['image_path'] = imagePath;
-      }
+        print('Preparing to send image file: ${imageFile.path}');
+        print('Image exists: ${imageFile.existsSync()}');
+        print('Image size: ${imageFile.lengthSync()} bytes');
 
-      final response = await http.post(
-        Uri.parse('$baseUrl/process_complaint'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(payload),
-      );
+        var request = http.MultipartRequest(
+            'POST', Uri.parse('$baseUrl/process_complaint'));
 
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        // Add text fields - ensure they're named exactly as expected by the backend
+        request.fields['complaint'] = complaint;
+        request.fields['location'] = location;
+
+        // Add the file - make sure 'image' matches what the server expects
+        try {
+          var stream = http.ByteStream(imageFile.openRead());
+          var length = await imageFile.length();
+
+          print('Created file stream, length: $length bytes');
+
+          var multipartFile = http.MultipartFile(
+              'image', // This name must match what the server expects in request.files['image']
+              stream,
+              length,
+              filename: path.basename(imageFile.path));
+
+          request.files.add(multipartFile);
+          print('Added file to request: ${multipartFile.filename}');
+
+          // Print request details for debugging
+          print('Request fields: ${request.fields}');
+          print('Request files: ${request.files.length} files');
+          print('Sending request to: ${request.url}');
+
+          // Send the request
+          var streamedResponse = await request.send();
+    
+
+          var response = await http.Response.fromStream(streamedResponse);
+          print('Response body length: ${response.body.length} bytes');
+
+          if (response.statusCode == 200) {
+            return jsonDecode(response.body);
+          } else {
+            print('Error response from server: ${response.body}');
+            throw Exception(
+                'Failed to process complaint: ${response.statusCode}');
+          }
+        } catch (e) {
+          print('Error in multipart request: $e');
+          throw Exception('Error sending image: $e');
+        }
       } else {
-        throw Exception('Failed to process complaint: ${response.statusCode}');
+        print('No image file provided, sending JSON request');
+        // Regular JSON request when no image is included
+        final payload = {
+          'complaint': complaint,
+          'location': location,
+        };
+
+        final response = await http.post(
+          Uri.parse('$baseUrl/process_complaint'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(payload),
+        );
+
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        } else {
+          print('Error from server: ${response.body}');
+          throw Exception(
+              'Failed to process complaint: ${response.statusCode}');
+        }
       }
     } catch (e) {
+      print('Error in processComplaint: $e');
       throw Exception('Complaint processing failed: $e');
     }
   }
@@ -94,20 +145,13 @@ class MLApiService {
     }
   }
 
+  // This method is no longer needed as we're sending the actual file
+  // in the multipart request above
   /// Upload an image file for processing
   Future<String> uploadImage(File imageFile) async {
     try {
-      // Create a temporary file path on the server
-      String fileName = path.basename(imageFile.path);
-      String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-      String serverFileName = "${timestamp}_$fileName";
-
-      // Convert the image to base64 for sending to the API
-      List<int> imageBytes = await imageFile.readAsBytes();
-      String base64Image = base64Encode(imageBytes);
-
-      // For now, we'll just return the local path since our Python API
-      // expects a file path that's accessible on the server
+      // Just return the file path, as we'll handle the actual file upload
+      // in the processComplaint method
       return imageFile.path;
     } catch (e) {
       throw Exception('Image upload failed: $e');

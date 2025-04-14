@@ -34,13 +34,24 @@ class _HomeState extends State<Home> {
 
   Future<void> _pickImage(ImageSource source) async {
     try {
-      final XFile? pickedFile = await _picker.pickImage(source: source);
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 1200, // Limit image size to reduce memory issues
+        maxHeight: 1200,
+        imageQuality: 85, // Slightly compress the image while maintaining quality
+      );
+      
       if (pickedFile != null) {
         setState(() {
           _selectedImage = File(pickedFile.path);
         });
+        
+        // Log image info for debugging
+        print('Image selected: ${pickedFile.path}');
+        print('Image file size: ${await _selectedImage!.length()} bytes');
       }
     } catch (e) {
+      print('Error picking image: $e');
       _showErrorSnackBar(context, 'Error picking image: $e');
     }
   }
@@ -74,6 +85,92 @@ class _HomeState extends State<Home> {
         );
       },
     );
+  }
+
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  // New method to submit the complaint
+  Future<void> _submitComplaint() async {
+    if (_problemController.text.trim().isEmpty) {
+      _showErrorSnackBar(context, 'Please describe your problem');
+      return;
+    }
+    
+    try {
+      // Show loading indicator
+      _showLoadingDialog(context);
+
+      print('Submitting complaint with image: ${_selectedImage != null ? 'Yes' : 'No'}');
+      if (_selectedImage != null) {
+        print('Image path: ${_selectedImage!.path}');
+        print('Image exists: ${await _selectedImage!.exists()}');
+        print('Image size: ${await _selectedImage!.length()} bytes');
+      }
+
+      final result = await mlApi.processComplaint(
+        complaint: _problemController.text,
+        location: _selectedLocation,
+        imageFile: _selectedImage,
+      );
+      
+      Map<String, String> parsedComplainerData = _parseResponse(result['complainer_view']);
+      Map<String, String> parsedOfficerData = _parseResponse(result['officer_view']);
+      
+      try {
+        print('Submitting complaint to database');
+
+        // Extract just the number part from severity (in case it's in format "3/5")
+        String severityString = parsedOfficerData['Severity'] ?? '1';
+        int severityValue;
+        if (severityString.contains('/')) {
+          severityValue = int.parse(severityString.split('/')[0]);
+        } else {
+          severityValue = int.parse(severityString);
+        }
+
+        await ComplaintsApiService.createComplaint(
+          longText: _problemController.text,
+          summarisedText: parsedOfficerData['Summary'] ?? 'No summary provided',
+          complaintStatus: 'Pending',
+          complaintSeverity: severityValue,
+          location: _selectedLocation,
+          department: parsedOfficerData['Departments'] ?? 'Unknown',
+          imageFile: _selectedImage,
+          userId: box.get('userId'),
+        );
+        
+        print('Complaint submitted successfully');
+      } catch (e) {
+        print('Error creating complaint: $e');
+      }
+      
+      // Close loading dialog
+      Navigator.pop(context);
+      
+      // Show response to user
+      _showResponseBottomSheet(context, result['complainer_view']);
+
+      // Clear form
+      setState(() {
+        _problemController.clear();
+        _selectedImage = null;
+      });
+    } catch (e) {
+      print('Error processing complaint: $e');
+      // Make sure to pop the loading dialog if there was an error
+      Navigator.of(context, rootNavigator: true).pop();
+      _showErrorSnackBar(context, 'Error submitting complaint: $e');
+    }
   }
 
   @override
@@ -297,78 +394,7 @@ class _HomeState extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 ElevatedButton(
-                                  onPressed: () async {
-                                    try {
-                                      // Show loading indicator
-                                      _showLoadingDialog(context);
-
-                                      final result =
-                                          await mlApi.processComplaint(
-                                        complaint: _problemController.text,
-                                        location: _selectedLocation,
-                                        imageFile: _selectedImage,
-                                      );
-                                      Map<String, String> parsedcomplainerData =
-                                          _parseResponse(
-                                              result['complainer_view']);
-                                      Map<String, String> parsedOfficerData =
-                                          _parseResponse(
-                                              result['officer_view']);
-                                      print(parsedOfficerData);
-                                      print(parsedcomplainerData);
-                                      try {
-                                        print('Complaint data:');
-                                        print(_problemController.text);
-                                        print(parsedOfficerData['Summary']);
-                                        print('Pending');
-
-                                        // Extract just the number part from severity (in case it's in format "3/5")
-                                        String severityString =
-                                            parsedOfficerData['Severity'] ??
-                                                '1';
-                                        int severityValue;
-                                        if (severityString.contains('/')) {
-                                          severityValue = int.parse(
-                                              severityString.split('/')[0]);
-                                        } else {
-                                          severityValue =
-                                              int.parse(severityString);
-                                        }
-
-                                        print(severityValue);
-                                        print(_selectedLocation);
-                                        print(parsedOfficerData['Departments']);
-                                        ComplaintsApiService.createComplaint(
-                                          longText: _problemController.text,
-                                          summarisedText:
-                                              parsedOfficerData['Summary'],
-                                          complaintStatus: 'Pending',
-                                          complaintSeverity: severityValue,
-                                          location: _selectedLocation,
-                                          department:
-                                              parsedOfficerData['Departments'],
-                                          imageFile:
-                                              _selectedImage, // Pass the selected image file
-                                          userId: box.get('userId'),
-                                        );
-                                      } catch (e) {
-                                        print('Error creating complaint: $e');
-                                      }
-                                      Navigator.pop(context);
-                                      _showResponseBottomSheet(
-                                          context, result['complainer_view']);
-
-                                      setState(() {
-                                        _problemController.clear();
-                                        _selectedImage = null;
-                                      });
-                                    } catch (e) {
-                                      // Hide loading indicator
-                                      Navigator.pop(context);
-                                      _showErrorSnackBar(context,
-                                          'Error submitting complaint');
-                                    }
-                                  },
+                                  onPressed: _submitComplaint, // Use the new method
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFF3A59D1),
                                     shape: RoundedRectangleBorder(
@@ -443,18 +469,6 @@ class _HomeState extends State<Home> {
             )
           ],
         ));
-  }
-
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
   }
 
   void _showResponseBottomSheet(BuildContext context, String response) {

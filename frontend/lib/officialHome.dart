@@ -131,7 +131,7 @@ class _OfficialhomeState extends State<Officialhome> {
                   SizedBox(height: screenHeight * 0.12),
                   Container(
                     width: screenWidth,
-                    height: screenHeight * 0.818,
+                    height: screenHeight * 0.82,
                     decoration: BoxDecoration(
                       color: Colors.white,
                     ),

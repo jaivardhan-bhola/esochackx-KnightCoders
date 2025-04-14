@@ -30,3 +30,86 @@ Location: Downtown
 Original Complaint: I waS OUT OF SAATTION AND WHEN I CAME BACK TO MY NHOUSEHOLD MY WHOLE FAMILY DDIES DUE TO DEHYDRATION, all beacause of the water shortage in my area.
 Departments: Health Ministry
 
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T15:08:46.547226
+Severity: 3/5
+Summary: The road is in disrepair.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T15:10:36.428411
+Severity: 3/5
+Summary: The road is closed due to damage.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T15:10:59.816538
+Severity: 2/5
+Summary: The road is in disrepair.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T15:12:25.226606
+Severity: 3/5
+Summary: The road is in disrepair.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T15:13:45.399279
+Severity: 3/5
+Summary: I apologize, but there is no text to summarize!
+Location: Sitaburdi
+Original Complaint: Image
+Departments: Sanitation
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T15:17:36.886344
+Severity: 1/5
+Summary: The summary is a brief greeting.
+Location: Sitaburdi
+Original Complaint: Hello
+Departments: Sanitation
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T15:22:02.813532
+Severity: 1/5
+Summary: A simple greeting is being expressed.
+Location: Sitaburdi
+Original Complaint: Hello
+Departments: 
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T15:25:58.772097
+Severity: 3/5
+Summary: The road is in disrepair.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T15:31:53.767577
+Severity: 3/5
+Summary: The road is in disrepair.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T15:35:33.146868
+Severity: 3/5
+Summary: The road is in poor condition due to damage and disrepair.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+Image Review: A visual assessment!
+
+Based on the provided image excerpt, I would say that it appears to be a photograph of a road, but it's not entirely clear what specifically is broken about it. The image seems to show a road with some cracks and uneven pavement, but it's not obvious what the exact issue is. Without seeing the full image or more context, it's difficult to determine whether this image is directly relevant to the complaint of a broken road.
+
