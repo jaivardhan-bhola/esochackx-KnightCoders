@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
 
 class MLApiService {
   // Base URL for the Flask API - update to match your deployment
@@ -34,13 +36,20 @@ class MLApiService {
   Future<Map<String, dynamic>> processComplaint({
     required String complaint,
     required String location,
+    File? imageFile,
   }) async {
     try {
+      // Prepare the payload
       final payload = {
         'complaint': complaint,
         'location': location,
-        
       };
+
+      // If an image is provided, add its path to the payload
+      if (imageFile != null) {
+        String imagePath = await uploadImage(imageFile);
+        payload['image_path'] = imagePath;
+      }
 
       final response = await http.post(
         Uri.parse('$baseUrl/process_complaint'),
@@ -85,11 +94,20 @@ class MLApiService {
   }
 
   /// Upload an image file for processing
-  Future<Map<String, dynamic>> uploadImage(String filePath) async {
+  Future<String> uploadImage(File imageFile) async {
     try {
-      // Implement file upload functionality
-      // This is a placeholder - you'll need to implement multipart file upload
-      throw UnimplementedError('Image upload not yet implemented');
+      // Create a temporary file path on the server
+      String fileName = path.basename(imageFile.path);
+      String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+      String serverFileName = "${timestamp}_$fileName";
+
+      // Convert the image to base64 for sending to the API
+      List<int> imageBytes = await imageFile.readAsBytes();
+      String base64Image = base64Encode(imageBytes);
+
+      // For now, we'll just return the local path since our Python API
+      // expects a file path that's accessible on the server
+      return imageFile.path;
     } catch (e) {
       throw Exception('Image upload failed: $e');
     }

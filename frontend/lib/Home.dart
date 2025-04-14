@@ -1,6 +1,10 @@
 import 'package:civicsense/MLApiCalls.dart';
+import 'package:civicsense/chatbot.dart';
+import 'package:civicsense/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -12,6 +16,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   TextEditingController _problemController = TextEditingController();
   String _selectedLocation = 'Sitaburdi'; // Default location
+  File? _selectedImage;
+  final ImagePicker _picker = ImagePicker();
 
   final List<String> _locations = [
     'Sitaburdi',
@@ -20,6 +26,51 @@ class _HomeState extends State<Home> {
     'Buttibori'
   ];
   final mlApi = MLApiService();
+
+  // Function to pick image from camera or gallery
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() {
+          _selectedImage = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      _showErrorSnackBar(context, 'Error picking image: $e');
+    }
+  }
+
+  // Function to show image picker options (camera or gallery)
+  void _showImagePickerOptions() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text('Photo Gallery'),
+                onTap: () {
+                  _pickImage(ImageSource.gallery);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_camera),
+                title: Text('Camera'),
+                onTap: () {
+                  _pickImage(ImageSource.camera);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,140 +133,175 @@ class _HomeState extends State<Home> {
                     topRight: Radius.circular(screenWidth * 0.05),
                   ),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: screenWidth * 0.05,
-                    right: screenWidth * 0.05,
-                    top: screenHeight * 0.02,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Describe your problem',
-                        style: GoogleFonts.instrumentSans(
-                          fontSize: screenWidth * 0.05,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.02),
-                      TextField(
-                        controller: _problemController,
-                        maxLines: null,
-                        minLines: 6,
-                        expands: false,
-                        decoration: InputDecoration(
-                          hintText: 'Enter your problem here',
-                          border: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(screenWidth * 0.02),
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.circular(screenWidth * 0.02),
-                            borderSide: BorderSide(color: Colors.blue),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: screenWidth * 0.05,
+                      right: screenWidth * 0.05,
+                      top: screenHeight * 0.02,
+                      bottom: screenHeight * 0.02,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Describe your problem',
+                          style: GoogleFonts.instrumentSans(
+                            fontSize: screenWidth * 0.05,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        style: TextStyle(fontSize: screenWidth * 0.04),
-                      ),
-                      SizedBox(height: screenHeight * 0.02),
-                      Text(
-                        'Select location',
-                        style: GoogleFonts.instrumentSans(
-                          fontSize: screenWidth * 0.05,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: screenHeight * 0.02),
-                      Container(
-                        width: screenWidth * 0.9,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius:
-                              BorderRadius.circular(screenWidth * 0.02),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.02),
-                          child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: _selectedLocation,
-                              isExpanded: true,
-                              hint: Text('Select location'),
-                              items: _locations.map((String location) {
-                                return DropdownMenuItem<String>(
-                                  value: location,
-                                  child: Text(location),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                if (newValue != null) {
-                                  setState(() {
-                                    _selectedLocation = newValue;
-                                  });
-                                }
-                              },
-                              style: TextStyle(
-                                fontSize: screenWidth * 0.04,
-                                color: Colors.black87,
-                              ),
+                        SizedBox(height: screenHeight * 0.02),
+                        TextField(
+                          controller: _problemController,
+                          maxLines: null,
+                          minLines: 6,
+                          expands: false,
+                          decoration: InputDecoration(
+                            hintText: 'Enter your problem here',
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.circular(screenWidth * 0.02),
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.circular(screenWidth * 0.02),
+                              borderSide: BorderSide(color: Colors.blue),
                             ),
                           ),
+                          style: TextStyle(fontSize: screenWidth * 0.04),
                         ),
-                      ),
-                      SizedBox(height: screenHeight * 0.02),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () async {
-                              try {
-                                // Show loading indicator
-                                _showLoadingDialog(context);
-
-                                final result = await mlApi.processComplaint(
-                                  complaint: _problemController.text,
-                                  location: _selectedLocation,
-                                );
-
-                                // Hide loading indicator
-                                Navigator.pop(context);
-
-                                // Show response in bottom sheet
-                                _showResponseBottomSheet(
-                                    context, result['complainer_view']);
-                              } catch (e) {
-                                // Hide loading indicator
-                                Navigator.pop(context);
-
-                                // Show error message
-                                _showErrorSnackBar(context, 'Error: $e');
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF3A59D1),
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(screenWidth * 0.02),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                vertical: screenHeight * 0.015,
-                                horizontal: screenWidth * 0.1,
-                              ),
-                            ),
-                            child: Text(
-                              'Submit',
-                              style: TextStyle(
+                        SizedBox(height: screenHeight * 0.02),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Select location',
+                              style: GoogleFonts.instrumentSans(
                                 fontSize: screenWidth * 0.05,
-                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            if (_selectedImage != null)
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedImage = null;
+                                  });
+                                },
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.close,
+                                        color: Colors.red, size: 16),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      'Remove image',
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                        SizedBox(height: screenHeight * 0.01),
+                        Container(
+                          width: screenWidth * 0.9,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius:
+                                BorderRadius.circular(screenWidth * 0.02),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenWidth * 0.02),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: _selectedLocation,
+                                isExpanded: true,
+                                hint: Text('Select location'),
+                                items: _locations.map((String location) {
+                                  return DropdownMenuItem<String>(
+                                    value: location,
+                                    child: Text(location),
+                                  );
+                                }).toList(),
+                                onChanged: (String? newValue) {
+                                  if (newValue != null) {
+                                    setState(() {
+                                      _selectedLocation = newValue;
+                                    });
+                                  }
+                                },
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.04,
+                                  color: Colors.black87,
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(width: screenWidth * 0.05),
-                          ElevatedButton(
-                              onPressed: () {
-                                // Handle file upload button press
+                        ),
+
+                        // Display selected image preview
+                        if (_selectedImage != null) ...[
+                          SizedBox(height: screenHeight * 0.02),
+                          Text(
+                            'Image attached',
+                            style: GoogleFonts.instrumentSans(
+                              fontSize: screenWidth * 0.04,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.green,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.01),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Container(
+                              constraints: BoxConstraints(
+                                maxHeight: screenHeight * 0.15,
+                              ),
+                              child: Image.file(
+                                _selectedImage!,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ],
+                        SizedBox(height: screenHeight * 0.02),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () async {
+                                try {
+                                  // Show loading indicator
+                                  _showLoadingDialog(context);
+
+                                  final result = await mlApi.processComplaint(
+                                    complaint: _problemController.text,
+                                    location: _selectedLocation,
+                                    imageFile: _selectedImage,
+                                  );
+                                  print('result:${result['officer_view']}');
+                                  // Hide loading indicator
+                                  Navigator.pop(context);
+
+                                  // Show response in bottom sheet
+                                  _showResponseBottomSheet(
+                                      context, result['complainer_view']);
+
+                                  // Clear the form after successful submission
+                                  setState(() {
+                                    _problemController.clear();
+                                    _selectedImage = null;
+                                  });
+                                } catch (e) {
+                                  // Hide loading indicator
+                                  Navigator.pop(context);
+
+                                  // Show error message
+                                  _showErrorSnackBar(context, 'Error: $e');
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Color(0xFF3A59D1),
@@ -224,21 +310,72 @@ class _HomeState extends State<Home> {
                                       BorderRadius.circular(screenWidth * 0.02),
                                 ),
                                 padding: EdgeInsets.symmetric(
-                                  vertical: screenHeight * 0.02,
-                                  horizontal: screenWidth * 0.05,
+                                  vertical: screenHeight * 0.015,
+                                  horizontal: screenWidth * 0.1,
                                 ),
                               ),
-                              child: Icon(
-                                Icons.attach_file,
-                                color: Colors.white,
-                                size: screenWidth * 0.05,
-                              )),
-                        ],
-                      ),
-                    ],
+                              child: Text(
+                                'Submit',
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.05,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: screenWidth * 0.05),
+                            ElevatedButton(
+                                onPressed: () {
+                                  _showImagePickerOptions();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xFF3A59D1),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        screenWidth * 0.02),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: screenHeight * 0.02,
+                                    horizontal: screenWidth * 0.05,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.attach_file,
+                                  color: Colors.white,
+                                  size: screenWidth * 0.05,
+                                )),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.home_rounded,
+                          color: Colors.white, size: screenWidth * 0.1)),
+                  SizedBox(width: screenWidth * 0.05),
+                  IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.feed_rounded,
+                          color: Colors.white, size: screenWidth * 0.1)),
+                  SizedBox(width: screenWidth * 0.05),
+                  IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Chatbot(),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.chat_rounded,
+                          color: Colors.white, size: screenWidth * 0.1)),
+                ],
+              )
             ],
           ),
         )
@@ -290,7 +427,8 @@ class _HomeState extends State<Home> {
                         Row(
                           children: [
                             Icon(Icons.assignment_turned_in,
-                                color: Color(0xFF3A59D1), size: screenWidth * 0.06),
+                                color: Color(0xFF3A59D1),
+                                size: screenWidth * 0.06),
                             SizedBox(width: screenWidth * 0.02),
                             Text(
                               'Complaint Registered',
@@ -348,7 +486,7 @@ class _HomeState extends State<Home> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF3A59D1),
                           padding: EdgeInsets.symmetric(
-                              horizontal:  screenWidth * 0.1,
+                              horizontal: screenWidth * 0.1,
                               vertical: screenHeight * 0.015),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
