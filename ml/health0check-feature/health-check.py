@@ -39,7 +39,7 @@ class_map = {
 class_labels = list(class_map.values())
 
 # === Define DenseNet-121 Model ===
-def load_skin_model(path=r'A:\hackathon\elevate\health-check\results-82\skin-disease-model2.pth'):
+def load_skin_model(path=r'skin-disease-model2.pth'):
     try:
         model = models.densenet121(pretrained=False)  # Use DenseNet-121
         model.classifier = nn.Linear(model.classifier.in_features, 7)  # Adjust for 7 output classes

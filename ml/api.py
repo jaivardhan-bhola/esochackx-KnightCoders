@@ -15,6 +15,12 @@ from civic_sense_message_community import (
     is_news_url,
     analyze_news_url
 )
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torchvision.models as models
+import torchvision.transforms as T
+from PIL import Image
 
 # Load environment variables
 load_dotenv(".env")
@@ -31,6 +37,52 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload
 
 # Load deepfake model once when the server starts
 deepfake_model = load_deepfake_model("deepfake_model.pt")
+
+# === Skin Disease Model Setup ===
+
+# Class mapping for skin disease
+skin_class_map = {
+    'nv': 'Melanocytic nevi',
+    'mel': 'Melanoma',
+    'bkl': 'Benign keratosis-like lesions',
+    'bcc': 'Basal cell carcinoma',
+    'akiec': 'Actinic keratoses',
+    'vasc': 'Vascular lesions',
+    'df': 'Dermatofibroma'
+}
+skin_class_labels = list(skin_class_map.values())
+
+def load_skin_model(path=r'/health0check-feature/skin-disease-model2.pth'):
+    try:
+        model = models.densenet121(pretrained=False)
+        model.classifier = nn.Linear(model.classifier.in_features, 7)
+        state_dict = torch.load(path, map_location='cpu')
+        model.load_state_dict(state_dict, strict=False)
+        model.eval()
+        return model
+    except Exception as e:
+        print(f"Error loading skin model: {e}")
+        return None
+
+def preprocess_skin_image(image_path):
+    transform = T.Compose([
+        T.Resize((224, 224)),
+        T.ToTensor(),
+        T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    ])
+    image = Image.open(image_path).convert("RGB")
+    image_tensor = transform(image).unsqueeze(0)
+    return image_tensor
+
+def predict_skin(model, image_tensor):
+    with torch.no_grad():
+        output = model(image_tensor)
+        probs = F.softmax(output, dim=1)
+        pred_idx = torch.argmax(probs, dim=1).item()
+        confidence = probs[0][pred_idx].item()
+    return skin_class_labels[pred_idx], confidence
+
+skin_model = load_skin_model()
 
 def allowed_file(filename):
     """Check if the file has an allowed extension"""
@@ -154,6 +206,33 @@ def analyze_post_api():
         "urls_found": urls,
         "news_urls_found": news_urls
     })
+
+@app.route('/predict_skin_disease', methods=['POST'])
+def predict_skin_disease_api():
+    """Predict skin disease from an uploaded image"""
+    if skin_model is None:
+        return jsonify({"error": "Skin disease model not loaded"}), 500
+    if 'image' not in request.files:
+        return jsonify({"error": "No image uploaded"}), 400
+    file = request.files['image']
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        try:
+            image_tensor = preprocess_skin_image(file_path)
+            prediction, confidence = predict_skin(skin_model, image_tensor)
+            os.remove(file_path)
+            return jsonify({
+                "prediction": prediction,
+                "confidence": confidence
+            })
+        except Exception as e:
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({"error": "Invalid file type"}), 400
 
 if __name__ == '__main__':
     # Print Python and system information for debugging
