@@ -33,19 +33,21 @@ DEPARTMENT_CONTACTS = {
 DEPARTMENTS = list(DEPARTMENT_CONTACTS.keys())
 
 # Analyze image for relevance to complaint
-
 def validate_image_with_llama(image_path, complaint_text):
-    img = Image.open(image_path).convert("RGB")
-    buffered = BytesIO()
-    img.save(buffered, format="PNG")
-    img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    try:
+        img = Image.open(image_path).convert("RGB")
+        buffered = BytesIO()
+        img.save(buffered, format="PNG")
+        img_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
 
-    prompt = f"A citizen has filed the following complaint: \"{complaint_text}\". Attached below is a base64-encoded image as proof. Does this image look relevant as evidence to support the complaint? Justify your answer briefly and short.also don't play too hard if it simply suggest or supports the case aprove it, however if it lacks something tell it but don't accept too perfect evidence Base64 Image (PNG): {img_base64[:1000]}..."
+        prompt = f"A citizen has filed the following complaint: \"{complaint_text}\". Attached below is a base64-encoded image as proof. Does this image look relevant as evidence to support the complaint? Justify your answer briefly and short.also don't play too hard if it simply suggest or supports the case aprove it, however if it lacks something tell it but don't accept too perfect evidence Base64 Image (PNG): {img_base64[:1000]}..."
 
-    response = llm.invoke(prompt).content.strip()
-    return response
+        response = llm.invoke(prompt).content.strip()
+        return response
+    except Exception as e:
+        return f"Error analyzing image: {str(e)}"
+
 # Classify departments using LLaMA
-
 def classify_departments(text):
     prompt = f"""Given this complaint:
 {text}
@@ -56,7 +58,6 @@ Return only department names as a comma-separated list."""
     return [d.strip() for d in response.content.split(",") if d.strip() in DEPARTMENTS]
 
 # Assess severity using LLaMA
-
 def get_severity_score(text):
     prompt = f"""Assess the severity of this civic complaint on a scale of 1 (least) to 5 (most severe).
 Complaint:
@@ -70,31 +71,26 @@ Severity (number only):"""
         return 3
 
 # Summarize using LLaMA
-
 def summarize_text(text):
     docs = [Document(page_content=t) for t in text_splitter.split_text(text)]
     return summarize_chain.run(docs)
 
 # Get contact info
-
 def get_contact_info(departments):
     return {d: DEPARTMENT_CONTACTS[d] for d in departments if d in DEPARTMENT_CONTACTS}
 
 # Fetch suggestions using LLaMA
-
 def fetch_interim_suggestions(complaint_text, department):
     query = f"answer in few (3-4) short points , and don't involve dear sir / madam or any salutation and also don't write  here is your answer/summary /suggestions or anything, just list out suggestions the complainer could do while waiting for depatment to deal with it- you are a government representative who received a complaint-{complaint_text} answer from perspective of {department}"
     result = llm.invoke(query).content
     return [line.strip("-• ") for line in result.split("\n") if line.strip()]
 
 # Generate officer brief
-
 def generate_officer_brief(summary, severity, departments):
     dept_str = ", ".join(departments) if departments else "relevant authority"
     return f"A complaint has been received regarding {summary}. The issue is rated {severity}/5 in severity and is forwarded to the {dept_str}."
 
 # Process complaint
-
 def process_complaint(text, location, image_path=None):
     while(True):
         timestamp = datetime.datetime.utcnow().isoformat()

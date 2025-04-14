@@ -3,6 +3,8 @@ import os
 from dotenv import load_dotenv
 import json
 from flask_cors import CORS 
+import tempfile
+from werkzeug.utils import secure_filename
 from civic_sense_complain import process_complaint
 from civic_sense_message_community import (
     analyze_social_media_post,
@@ -20,8 +22,19 @@ serper_api_key = os.getenv("SERPER_API_KEY")
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+# Configure upload settings
+UPLOAD_FOLDER = tempfile.gettempdir()  # Use system temp directory
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload
+
 # Load deepfake model once when the server starts
 deepfake_model = load_deepfake_model("deepfake_model.pt")
+
+def allowed_file(filename):
+    """Check if the file has an allowed extension"""
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/health', methods=['GET'])
 def health_check():
@@ -34,18 +47,44 @@ def health_check():
 @app.route('/process_complaint', methods=['POST'])
 def process_complaint_api():
     """Process a civic complaint"""
-    data = request.json
-    if not data:
-        return jsonify({"error": "No data provided"}), 400
+    # Check if the request is multipart (contains a file)
+    image_path = None
     
-    complaint = data.get('complaint')
-    location = data.get('location')
-    image_path = data.get('image_path')
+    if request.files and 'image' in request.files:
+        # Handle file upload
+        file = request.files['image']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            image_path = file_path
+            
+            # Get form data when uploading files
+            complaint = request.form.get('complaint')
+            location = request.form.get('location')
+    else:
+        # Handle regular JSON data
+        data = request.json
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+        
+        complaint = data.get('complaint')
+        location = data.get('location')
     
+    # Validate required fields
     if not complaint or not location:
         return jsonify({"error": "Complaint and location are required"}), 400
     
+    # Process the complaint
     complainer_view, officer_view = process_complaint(complaint, location, image_path)
+    
+    # Clean up temp file if one was created
+    if image_path and os.path.exists(image_path):
+        try:
+            os.remove(image_path)
+        except Exception as e:
+            # Log the error but don't fail the request
+            print(f"Warning: Failed to remove temp file: {e}")
     
     return jsonify({
         "complainer_view": complainer_view,
