@@ -78,3 +78,244 @@ Timestamp: 2025-04-13T09:44:11.575007
 Status: Pending
 
 
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - * Report the issue to our department through our website or mobile app, providing details such as the location and extent of the damage.
+  - * Avoid using the road until it is repaired to prevent further damage and ensure safety.
+  - * Consider taking an alternative route while the road is being repaired to minimize inconvenience.
+Timestamp: 2025-04-14T15:08:46.547226
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - Here are the suggestions for the complainer:
+  - Report the broken road to our department's online complaint portal or mobile app to ensure prompt attention.
+  - Provide specific details about the location and extent of the damage to facilitate swift repair.
+  - Avoid using the road until repairs are made to prevent further damage and ensure safety.
+  - Consider sharing a photo of the broken road on social media to raise awareness and help us prioritize the repair.
+Timestamp: 2025-04-14T15:10:36.428411
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - Here are the suggestions:
+  - 1. Check online updates: Visit our website to track the status of the road repair work and estimated completion date.
+  - 2. Contact local authorities: Reach out to your local council or road maintenance department for more information on the repair schedule and any potential detours.
+  - 3. Report the issue again: If you have not already done so, please report the broken road to our department so that we can prioritize the repair work.
+Timestamp: 2025-04-14T15:10:59.816538
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - * Report the issue to the nearest traffic police or local authorities, providing as much detail as possible about the location and extent of the damage.
+  - * Take a photo or video of the broken road to support the complaint and provide evidence of the problem.
+  - * Check for any nearby signs or markers indicating the road's condition and report any discrepancies to the department.
+Timestamp: 2025-04-14T15:12:25.226606
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Image
+Location: Sitaburdi
+Departments Forwarded: Sanitation
+Contact Details:
+  Sanitation: Phone - 1800-333-122, Email - cleanliness@civic.gov.in
+Suggestions:
+  - * Report the issue to our online complaint portal to track and expedite the resolution.
+  - * Provide photographs or video evidence of the issue to assist our department in addressing it promptly.
+  - * Keep an eye on our department's social media channels for updates on the status of your complaint.
+Timestamp: 2025-04-14T15:13:45.399279
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Hello
+Location: Sitaburdi
+Departments Forwarded: Sanitation
+Contact Details:
+  Sanitation: Phone - 1800-333-122, Email - cleanliness@civic.gov.in
+Suggestions:
+  - * Report the issue to the local sanitation department's toll-free number or online portal to ensure prompt attention.
+  - * Take a photograph of the issue as evidence to share with the department, including location, time, and date.
+  - * Provide as much detail as possible about the issue, including duration, impact on daily life, and any attempts made to resolve it previously.
+Timestamp: 2025-04-14T15:17:36.886344
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Hello
+Location: Sitaburdi
+Departments Forwarded: 
+Contact Details:
+Suggestions:
+Timestamp: 2025-04-14T15:22:02.813532
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - Here are some suggestions for the complainer while waiting for the department to deal with the broken road:
+  - * Take photos and notes of the broken road to provide evidence of the issue.
+  - * Avoid using the road if possible and find an alternate route.
+  - * Report the issue to the department on multiple occasions if necessary to ensure it is acknowledged and addressed.
+Timestamp: 2025-04-14T15:25:58.772097
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - Here are some suggestions for the complainer to consider while waiting for the department to address the issue:
+  - 1. Take a photo of the broken road to provide evidence and submit it to our department.
+  - 2. Note down the location and extent of the damage to facilitate quicker identification and repair.
+  - 3. Avoid using the road if possible, especially if it's a safety concern, and use alternative routes if available.
+Timestamp: 2025-04-14T15:31:53.767577
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - Here are some suggestions for the complainer while waiting for the department to deal with the broken road:
+  - Document the issue by taking photos or videos of the broken road and note down the location and time of the complaint.
+  - File a detailed online complaint with our department, providing all relevant information including the location and description of the issue.
+  - Report the issue to the local authorities or nearby police station for immediate attention, if it's causing any traffic congestion or safety hazards.
+Image Validation: A visual assessment!
+
+Based on the provided image excerpt, I would say that it appears to be a photograph of a road, but it's not entirely clear what specifically is broken about it. The image seems to show a road with some cracks and uneven pavement, but it's not obvious what the exact issue is. Without seeing the full image or more context, it's difficult to determine whether this image is directly relevant to the complaint of a broken road.
+Timestamp: 2025-04-14T15:35:33.146868
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - Here are some suggestions:
+  - Take a photo of the broken road and send it to us as evidence to expedite the repair process.
+  - Avoid using the road until it is repaired to prevent any accidents or further damage.
+  - Plan an alternative route to reach your destination until the road is fixed.
+Image Validation: Image received but couldn't be analyzed with AI: name 'response' is not defined. Proceeding with complaint.
+Timestamp: 2025-04-14T15:44:26.481615
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - Here are some suggestions:
+  - * Take a photo of the broken road and send it to us for our records
+  - * Report the location of the broken road so we can send a maintenance team to fix it as soon as possible
+  - * Consider using an alternative route until the road is repaired
+Image Validation: Based on the provided image excerpt, it appears that the image is a photograph of a road, but it does not provide clear evidence of the road being broken. The image appears to be a generic road scene, and it's difficult to determine from this small excerpt whether the road is indeed broken or not.
+Timestamp: 2025-04-14T15:47:45.510390
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - Here are some suggestions the complainer could do while waiting for the department to deal with the issue:
+  - 1. Take a photo of the broken road to document the extent of the damage and share it with us, so we can assess the issue more effectively.
+  - 2. Report the issue to the local authorities or the nearest traffic police station, so that they can also be aware of the problem and take necessary precautions.
+  - 3. Try to avoid driving on the broken road if possible, and take an alternative route if available, to minimize the risk of accidents or damage to vehicles.
+Image Validation: Based on the provided image excerpt, it appears to be a road image, but it's unclear whether it shows a broken road or not. The image is incomplete and doesn't provide a clear view of the road surface, making it difficult to assess the relevance of the complaint.
+Timestamp: 2025-04-14T15:49:57.726422
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - Here are some suggestions for you while waiting for us to deal with the broken road:
+  - * Take an alternative route to avoid any inconvenience: If possible, consider taking another road or route to your destination to minimize disruptions.
+  - * Report the issue to us again: You can try contacting our department again to confirm receipt of your initial complaint and to ask for an estimated timeline for repair.
+  - * Take photos and notes: Document the location and extent of the damage to help our technicians assess the issue and prioritize repairs.
+Image Validation: Based on the provided image, it appears to be a photo of a road, but it's unclear how relevant it is to the complaint "Road is broken". The image could potentially be a snapshot of a pothole or a cracked asphalt, but without more context or information, it's difficult to determine if the image specifically shows a broken road that is causing harm or inconvenience to the citizen. Further investigation is necessary to determine the relevance of the image to the complaint.
+Timestamp: 2025-04-14T15:50:57.207494
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broke
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - Here are a few suggestions:
+  - * Take pictures of the broken road and send them to our department to help expedite the repair process.
+  - * Contact our office to report the issue and provide more information, such as the location and nature of the damage.
+  - * Consider using alternative routes to avoid the broken road, if possible.
+Image Validation: Based on the provided image excerpt, it appears to be a picture of a road, but it's unclear whether it's relevant to the complaint "Road is broke". The image quality is poor, and without seeing the full image, it's difficult to determine if the road is actually broken or if there are any issues with the surface, cracks, or other defects. Without more context or a clearer image, it's impossible to say for certain whether the image is relevant to the complaint.
+Timestamp: 2025-04-14T15:54:16.995985
+Status: Pending
+
+
+--- COMPLAINER COPY ---
+Original Complaint: Road is broken
+Location: Sitaburdi
+Departments Forwarded: Road Development
+Contact Details:
+  Road Development: Phone - 1800-443-556, Email - roads@civic.gov.in
+Suggestions:
+  - Here are some suggestions for the complainer while waiting for us to deal with the issue:
+  - * Take a photo of the broken road and send it to us, along with the location details, to help us identify the issue and prioritize repair.
+  - * Avoid using the road if possible and take an alternative route until the repair is done to ensure safety.
+  - * Report any other issues you may notice, such as potholes, cracks, or uneven surfaces, to help us identify potential problems and plan for maintenance.
+Image Validation: Based on the provided image excerpt, it appears to be a photograph of a road, but it's unclear whether the road is broken or not. The image is blurry and doesn't provide a clear view of the road's condition.
+Timestamp: 2025-04-14T15:59:45.811488
+Status: Pending
+
+

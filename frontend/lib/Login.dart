@@ -1,5 +1,9 @@
+import 'package:civicsense/Home.dart';
+import 'package:civicsense/officialHome.dart';
+import 'package:civicsense/services/userApiService.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -15,10 +19,12 @@ class _LoginState extends State<Login> {
   TextEditingController nameController = TextEditingController();
   bool isPasswordVisible = false;
   bool isRegister = false;
+  var box = Hive.box('appBox');
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
         body: Stack(
       children: [
@@ -32,7 +38,8 @@ class _LoginState extends State<Login> {
               child: CircleAvatar(
                 radius: screenWidth * 0.2,
                 backgroundColor: Colors.blue,
-                child: Image.asset('assets/logo.png'),
+               backgroundImage: AssetImage('assets/logo.png'),
+              
               ),
             ),
             SizedBox(height: screenHeight * 0.05),
@@ -274,7 +281,50 @@ class _LoginState extends State<Login> {
                                 ),
                                 SizedBox(height: screenHeight * 0.02),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    var response = UserApiService.registerUser(
+                                      emailController.text,
+                                      passwordController.text,
+                                      nameController.text,
+                                      phoneController.text,
+                                    );
+                                    response.then((user) {
+                                      box.put('name', user['user']['username']);
+                                      box.put('email', user['user']['email']);
+                                      box.put('type', user['user']['type']);
+                                      box.put('phone', user['user']['phone']);
+                                      box.put(
+                                          'userId',
+                                          user['user']
+                                              ['id']); 
+                                      box.put('isLoggedIn', true);
+                                      if (user['user']['type'] == 'Citizen') {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Home(),
+                                          ),
+                                        );
+                                      }
+                                      else if (user['user']['type'] == 'Official') {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Officialhome(),
+                                          ),
+                                        );
+                                      }
+                                    }).catchError((error) {
+                                      print(error);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text('Invalid Details',
+                                                  style: TextStyle(
+                                                      color:
+                                                          Color(0xFF3A59D1))),
+                                              backgroundColor: Colors.white));
+                                    });
+                                  },
                                   child: Text(
                                     'Next',
                                     style: GoogleFonts.amaranth(
@@ -376,14 +426,55 @@ class _LoginState extends State<Login> {
                                   ),
                                 ),
                                 SizedBox(height: screenHeight * 0.02),
-                                ElevatedButton(onPressed: (){}, child: Text(
-                                  'Login',
-                                  style: GoogleFonts.amaranth(
-                                    fontSize: screenWidth * 0.05,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                ElevatedButton(
+                                  onPressed: () {
+                                    var response = UserApiService.loginUser(
+                                        emailController.text,
+                                        passwordController.text);
+                                    response.then((user) {
+                                      box.put('name', user['user']['username']);
+                                      box.put('email', user['user']['email']);
+                                      box.put('type', user['user']['type']);
+                                      box.put(
+                                          'userId',
+                                          user['user']
+                                              ['id']); // Store the user ID
+                                      box.put('isLoggedIn', true);
+                                      if (user['user']['type'] == 'Citizen') {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Home(),
+                                          ),
+                                        );
+                                      }
+                                      else if (user['user']['type'] == 'Official') {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Officialhome(),
+                                          ),
+                                        );
+                                      }
+                                    }).catchError((error) {
+                                      print(error);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text('Invalid Details',
+                                                  style: TextStyle(
+                                                      color:
+                                                          Color(0xFF3A59D1))),
+                                              backgroundColor: Colors.white));
+                                    });
+                                  },
+                                  child: Text(
+                                    'Login',
+                                    style: GoogleFonts.amaranth(
+                                      fontSize: screenWidth * 0.05,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFF3A59D1),
                                     shape: RoundedRectangleBorder(
@@ -395,7 +486,8 @@ class _LoginState extends State<Login> {
                                   ),
                                 ),
                                 SizedBox(height: screenHeight * 0.02),
-                                Text('Or', 
+                                Text(
+                                  'Or',
                                   style: GoogleFonts.amaranth(
                                     fontSize: screenWidth * 0.05,
                                     color: Colors.black,
@@ -403,7 +495,14 @@ class _LoginState extends State<Login> {
                                 ),
                                 SizedBox(height: screenHeight * 0.02),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Home(),
+                                      ),
+                                    );
+                                  },
                                   child: Text(
                                     'Login with Google',
                                     style: GoogleFonts.amaranth(
