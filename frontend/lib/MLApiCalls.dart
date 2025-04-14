@@ -5,7 +5,7 @@ import 'package:path/path.dart' as path;
 
 class MLApiService {
   // Base URL for the Flask API - update to match your deployment
-  static const String baseUrl = "http://192.168.109.121:7122";
+  static const String baseUrl = "http://192.168.77.84:7122";
 
   // Singleton instance
   static final MLApiService _instance = MLApiService._internal();
