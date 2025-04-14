@@ -65,7 +65,9 @@ class ComplaintsApiService {
     String? location,
     String? department,
     File? imageFile,
-    int? userId, // Added userId parameter
+    int? userId,
+    String? imageValidation, // Added userId parameter
+    String? imageAnalysis, // Added imageAnalysis parameter
   }) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
@@ -89,8 +91,10 @@ class ComplaintsApiService {
         'Location': location,
         'Department': department,
         if (imageId != null) 'image': [imageId],
-        if (userId != null)
-          'users_permissions_user': userId, // Associate complaint with user
+        if (imageValidation != null) 'imageValidation': imageValidation,
+        if (userId != null) 'users_permissions_user': userId,
+        if (imageAnalysis != null)
+          'imageAnalysis': imageAnalysis, // Add imageAnalysis to payload
       }
     });
     try {
@@ -167,6 +171,7 @@ class ComplaintsApiService {
     String? complaintStatus,
     int? complaintSeverity,
     int? userId, // Added userId parameter
+    String? imageAnalysis, // Added imageAnalysis parameter
   }) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
@@ -186,6 +191,8 @@ class ComplaintsApiService {
         if (complaintSeverity != null) 'complaintSeverity': complaintSeverity,
         if (userId != null)
           'users_permissions_user': userId, // Associate complaint with user
+        if (imageAnalysis != null)
+          'imageAnalysis': imageAnalysis, // Add imageAnalysis to payload
       }
     });
 

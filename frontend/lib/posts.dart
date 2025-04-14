@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:civicsense/healthcheck.dart';
 import 'package:civicsense/officialHome.dart';
+import 'package:civicsense/widgets/parallelogram_shape.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -388,6 +390,17 @@ class _PostsState extends State<Posts> {
           ],
         ),
       ),
+       floatingActionButton: ParallelogramButton(
+          color: Color(0xFF71B340),
+          width: 60,
+          height: 50,
+          skewAmount: 12.0,
+          onPressed: () {
+            _showCreatePostSheet();
+          },
+          child: Icon(Icons.add, color: Colors.white),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Stack(
         children: [
           Container(
@@ -474,8 +487,7 @@ class _PostsState extends State<Posts> {
                                       final post = posts[index];
                                       final user =
                                           post['users_permissions_user'];
-                                      final media = post['media'][0]['formats']
-                                          ['thumbnail'];
+                                        final media = post['media'] != null && post['media'].isNotEmpty ? post['media'][0]['formats']['thumbnail'] : null;
                                      
 
                                       return Card(
@@ -516,7 +528,7 @@ class _PostsState extends State<Posts> {
                                                 _getTimeAgo(post['createdAt']),
                                                 style: TextStyle(fontSize: 12),
                                               ),
-                                            
+                                              trailing: Icon(Icons.more_vert),
                                             ),
                                             Padding(
                                               padding: EdgeInsets.symmetric(
@@ -612,30 +624,22 @@ class _PostsState extends State<Posts> {
                         icon: Icon(Icons.feed_rounded,
                             color: Colors.white, size: screenWidth * 0.1)),
                     SizedBox(width: screenWidth * 0.05),
+                    if (box.get('type') == 'Citizen')
                     IconButton(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Chatbot(),
+                              builder: (context) => HealthCheck(),
                             ),
                           );
                         },
-                        icon: Icon(Icons.chat_rounded,
+                        icon: Icon(Icons.medical_services_rounded,
                             color: Colors.white, size: screenWidth * 0.1)),
+                    SizedBox(width: screenWidth * 0.05),
                   ],
                 )
               ],
-            ),
-          ),
-          Positioned(
-            bottom: screenHeight * 0.08,
-            right: screenWidth * 0.05,
-            child: FloatingActionButton(
-              onPressed: _showCreatePostSheet,
-              backgroundColor: Color(0xFF3A59D1),
-              child: Icon(Icons.add, color: Colors.white),
-              elevation: 8,
             ),
           ),
         ],

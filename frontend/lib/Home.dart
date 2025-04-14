@@ -1,6 +1,7 @@
 import 'package:civicsense/MLApiCalls.dart';
 import 'package:civicsense/Profile.dart';
 import 'package:civicsense/chatbot.dart';
+import 'package:civicsense/healthcheck.dart';
 import 'package:civicsense/posts.dart';
 import 'package:civicsense/widgets/parallelogram_shape.dart'; // Import the custom shape
 import 'package:flutter/material.dart';
@@ -38,14 +39,15 @@ class _HomeState extends State<Home> {
         source: source,
         maxWidth: 1200, // Limit image size to reduce memory issues
         maxHeight: 1200,
-        imageQuality: 85, // Slightly compress the image while maintaining quality
+        imageQuality:
+            85, // Slightly compress the image while maintaining quality
       );
-      
+
       if (pickedFile != null) {
         setState(() {
           _selectedImage = File(pickedFile.path);
         });
-        
+
         // Log image info for debugging
         print('Image selected: ${pickedFile.path}');
         print('Image file size: ${await _selectedImage!.length()} bytes');
@@ -105,12 +107,13 @@ class _HomeState extends State<Home> {
       _showErrorSnackBar(context, 'Please describe your problem');
       return;
     }
-    
+
     try {
       // Show loading indicator
       _showLoadingDialog(context);
 
-      print('Submitting complaint with image: ${_selectedImage != null ? 'Yes' : 'No'}');
+      print(
+          'Submitting complaint with image: ${_selectedImage != null ? 'Yes' : 'No'}');
       if (_selectedImage != null) {
         print('Image path: ${_selectedImage!.path}');
         print('Image exists: ${await _selectedImage!.exists()}');
@@ -122,10 +125,19 @@ class _HomeState extends State<Home> {
         location: _selectedLocation,
         imageFile: _selectedImage,
       );
-      
-      Map<String, String> parsedComplainerData = _parseResponse(result['complainer_view']);
-      Map<String, String> parsedOfficerData = _parseResponse(result['officer_view']);
-      
+
+      Map<String, String> parsedComplainerData =
+          _parseResponse(result['complainer_view']);
+      Map<String, String> parsedOfficerData =
+          _parseResponse(result['officer_view']);
+      print('Parsed Complainer Data: ${parsedComplainerData}');
+
+      // Extract the image validation text
+      String imageValidationText =
+          extractImageValidation(result['complainer_view']);
+      print('EXTRACTED IMAGE VALIDATION TEXT:');
+      print(imageValidationText);
+
       try {
         print('Submitting complaint to database');
 
@@ -138,7 +150,7 @@ class _HomeState extends State<Home> {
           severityValue = int.parse(severityString);
         }
 
-        await ComplaintsApiService.createComplaint(
+        bool success = await ComplaintsApiService.createComplaint(
           longText: _problemController.text,
           summarisedText: parsedOfficerData['Summary'] ?? 'No summary provided',
           complaintStatus: 'Pending',
@@ -146,17 +158,22 @@ class _HomeState extends State<Home> {
           location: _selectedLocation,
           department: parsedOfficerData['Departments'] ?? 'Unknown',
           imageFile: _selectedImage,
-          userId: box.get('userId'),
+          userId: int.tryParse(box.get('userId')),
+          imageAnalysis: imageValidationText, // Add the image validation text
         );
-        
-        print('Complaint submitted successfully');
+
+        if (success) {
+          print('Complaint submitted successfully');
+        } else {
+          print('Failed to create complaint in database');
+        }
       } catch (e) {
         print('Error creating complaint: $e');
       }
-      
+
       // Close loading dialog
       Navigator.pop(context);
-      
+
       // Show response to user
       _showResponseBottomSheet(context, result['complainer_view']);
 
@@ -394,7 +411,8 @@ class _HomeState extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 ElevatedButton(
-                                  onPressed: _submitComplaint, // Use the new method
+                                  onPressed:
+                                      _submitComplaint, // Use the new method
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFF3A59D1),
                                     shape: RoundedRectangleBorder(
@@ -460,6 +478,18 @@ class _HomeState extends State<Home> {
                             );
                           },
                           icon: Icon(Icons.feed_rounded,
+                              color: Colors.white, size: screenWidth * 0.1)),
+                      SizedBox(width: screenWidth * 0.05),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HealthCheck(),
+                              ),
+                            );
+                          },
+                          icon: Icon(Icons.medical_services_rounded,
                               color: Colors.white, size: screenWidth * 0.1)),
                       SizedBox(width: screenWidth * 0.05),
                     ],
@@ -794,6 +824,30 @@ class _HomeState extends State<Home> {
     );
   }
 
+  // New method to extract the image validation text from the complainer response
+  String extractImageValidation(String response) {
+    String imageValidationText = "";
+
+    // Look for the Image Validation section
+    if (response.contains("Image Validation:")) {
+      int startIndex = response.indexOf("Image Validation:");
+      // Move past the "Image Validation:" text
+      startIndex += "Image Validation:".length;
+
+      // Find the end of the validation text (either next section or end of response)
+      int endIndex = response.indexOf("\n", startIndex);
+      if (endIndex == -1) {
+        // If no newline after validation, take until the end
+        imageValidationText = response.substring(startIndex).trim();
+      } else {
+        // If there is text after validation, take just the validation part
+        imageValidationText = response.substring(startIndex, endIndex).trim();
+      }
+    }
+
+    return imageValidationText;
+  }
+
   Map<String, String> _parseResponse(String response) {
     Map<String, String> result = {};
 
@@ -853,6 +907,12 @@ class _HomeState extends State<Home> {
         }
         currentSection = 'Suggestions';
         currentContent = '';
+      } else if (line.startsWith('Image Validation:')) {
+        if (currentSection.isNotEmpty) {
+          result[currentSection] = currentContent.trim();
+        }
+        currentSection = 'Image Validation';
+        currentContent = line.substring('Image Validation:'.length).trim();
       } else if (line.startsWith('Timestamp:')) {
         if (currentSection.isNotEmpty) {
           result[currentSection] = currentContent.trim();

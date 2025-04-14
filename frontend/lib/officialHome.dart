@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:civicsense/services/complaintsApiService.dart'; // Import the complaints service
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:civicsense/widgets/parallelogram_shape.dart'; // Import the custom shape
 
 class Officialhome extends StatefulWidget {
   const Officialhome({super.key});
@@ -131,107 +132,112 @@ class _OfficialhomeState extends State<Officialhome> {
                   SizedBox(height: screenHeight * 0.12),
                   Container(
                     width: screenWidth,
-                    height: screenHeight * 0.82,
+                    height: screenHeight * 0.815,
                     decoration: BoxDecoration(
                       color: Colors.white,
                     ),
-                    child: SingleChildScrollView(
-                      child: Padding(
-                          padding: EdgeInsets.only(
-                            left: screenWidth * 0.05,
-                            right: screenWidth * 0.05,
-                            top: screenHeight * 0.02,
-                            bottom: screenHeight * 0.02,
-                          ),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Complaints Dashboard',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: screenWidth * 0.06,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF3A59D1),
-                                  ),
-                                ),
-                                SizedBox(height: screenHeight * 0.02),
-                                Container(
-                                  height: screenHeight * 0.05,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      children: [
-                                        FilterChip(
-                                          'All',
-                                          filterStatus == 'All',
-                                          () => setState(
-                                              () => filterStatus = 'All'),
-                                          Colors.grey,
-                                        ),
-                                        SizedBox(width: 10),
-                                        FilterChip(
-                                          'Pending',
-                                          filterStatus == 'Pending',
-                                          () => setState(
-                                              () => filterStatus = 'Pending'),
-                                          Colors.orange,
-                                        ),
-                                        SizedBox(width: 10),
-                                        FilterChip(
-                                          'Completed',
-                                          filterStatus == 'Completed',
-                                          () => setState(
-                                              () => filterStatus = 'Completed'),
-                                          Colors.green,
-                                        ),
-                                        SizedBox(width: 10),
-                                        FilterChip(
-                                          'Rejected',
-                                          filterStatus == 'Rejected',
-                                          () => setState(
-                                              () => filterStatus = 'Rejected'),
-                                          Colors.red,
-                                        ),
-                                      ],
+                    child: RefreshIndicator(
+                      onRefresh: fetchComplaints,
+                      color: Color(0xFF3A59D1),
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Padding(
+                            padding: EdgeInsets.only(
+                              left: screenWidth * 0.05,
+                              right: screenWidth * 0.05,
+                              top: screenHeight * 0.02,
+                              bottom: screenHeight * 0.02,
+                            ),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Complaints Dashboard',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: screenWidth * 0.06,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF3A59D1),
                                     ),
                                   ),
-                                ),
-                                SizedBox(height: screenHeight * 0.02),
-                                if (isLoading)
-                                  Center(
-                                    child: CircularProgressIndicator(),
-                                  )
-                                else if (complaints.isEmpty)
-                                  Center(
-                                    child: Text(
-                                      'No complaints found',
-                                      style: TextStyle(
-                                        fontSize: screenWidth * 0.04,
-                                        color: Colors.grey,
+                                  SizedBox(height: screenHeight * 0.02),
+                                  Container(
+                                    height: screenHeight * 0.05,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        children: [
+                                          FilterChip(
+                                            'All',
+                                            filterStatus == 'All',
+                                            () => setState(
+                                                () => filterStatus = 'All'),
+                                            Colors.grey,
+                                          ),
+                                          SizedBox(width: 10),
+                                          FilterChip(
+                                            'Pending',
+                                            filterStatus == 'Pending',
+                                            () => setState(
+                                                () => filterStatus = 'Pending'),
+                                            Colors.orange,
+                                          ),
+                                          SizedBox(width: 10),
+                                          FilterChip(
+                                            'Completed',
+                                            filterStatus == 'Completed',
+                                            () => setState(
+                                                () => filterStatus = 'Completed'),
+                                            Colors.green,
+                                          ),
+                                          SizedBox(width: 10),
+                                          FilterChip(
+                                            'Rejected',
+                                            filterStatus == 'Rejected',
+                                            () => setState(
+                                                () => filterStatus = 'Rejected'),
+                                            Colors.red,
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                  )
-                                else
-                                  Column(
-                                    children: complaints
-                                        .where((complaint) {
-                                          final attributes =
-                                              complaint['attributes'] ??
-                                                  complaint;
-                                          final status =
-                                              attributes['complaintStatus'] ??
-                                                  '';
-                                          return filterStatus == 'All' ||
-                                              status.toLowerCase() ==
-                                                  filterStatus.toLowerCase();
-                                        })
-                                        .map((complaint) => buildComplaintCard(
-                                            complaint,
-                                            screenWidth,
-                                            screenHeight))
-                                        .toList(),
                                   ),
-                              ])),
+                                  SizedBox(height: screenHeight * 0.02),
+                                  if (isLoading)
+                                    Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  else if (complaints.isEmpty)
+                                    Center(
+                                      child: Text(
+                                        'No complaints found',
+                                        style: TextStyle(
+                                          fontSize: screenWidth * 0.04,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    )
+                                  else
+                                    Column(
+                                      children: complaints
+                                          .where((complaint) {
+                                            final attributes =
+                                                complaint['attributes'] ??
+                                                    complaint;
+                                            final status =
+                                                attributes['complaintStatus'] ??
+                                                    '';
+                                            return filterStatus == 'All' ||
+                                                status.toLowerCase() ==
+                                                    filterStatus.toLowerCase();
+                                          })
+                                          .map((complaint) => buildComplaintCard(
+                                              complaint,
+                                              screenWidth,
+                                              screenHeight))
+                                          .toList(),
+                                    ),
+                                ])),
+                      ),
                     ),
                   ),
                   Row(
@@ -253,18 +259,7 @@ class _OfficialhomeState extends State<Officialhome> {
                           },
                           icon: Icon(Icons.feed_rounded,
                               color: Colors.white, size: screenWidth * 0.1)),
-                      SizedBox(width: screenWidth * 0.05),
-                      IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Chatbot(),
-                              ),
-                            );
-                          },
-                          icon: Icon(Icons.chat_rounded,
-                              color: Colors.white, size: screenWidth * 0.1)),
+                      SizedBox(width: screenWidth * 0.1),
                     ],
                   )
                 ],
@@ -279,13 +274,22 @@ class _OfficialhomeState extends State<Officialhome> {
               ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: ParallelogramButton(
+          color: Color(0xFF71B340),
+          width: 60,
+          height: 50,
+          skewAmount: 12.0,
           onPressed: () {
-            fetchComplaints();
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Chatbot(),
+              ),
+            );
           },
-          backgroundColor: Color(0xFF3A59D1),
-          child: Icon(Icons.refresh, color: Colors.white),
-        ));
+          child: Icon(Icons.chat_rounded, color: Colors.white),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat);
   }
 
   Widget FilterChip(
@@ -324,6 +328,7 @@ class _OfficialhomeState extends State<Officialhome> {
     final severity = attributes['complaintSeverity']?.toString() ?? '0';
     final department = attributes['Department'] ?? 'Unknown department';
     final location = attributes['Location'] ?? 'Unknown location';
+    final imageValidation = attributes['imageValidation'] ?? '';
 
     // Handle image data
     List<dynamic>? images;
@@ -471,6 +476,43 @@ class _OfficialhomeState extends State<Officialhome> {
                       },
                     ),
                   ),
+                  
+                  if (imageValidation != null && imageValidation.isNotEmpty) ...[
+                    SizedBox(height: 12),
+                    Text(
+                      'AI Image Analysis:',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: screenWidth * 0.04,
+                        color: Color(0xFF3A59D1),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey[300]!),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.auto_awesome, color: Colors.amber, size: 20),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              imageValidation,
+                              style: TextStyle(
+                                fontSize: screenWidth * 0.035,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
 
                 SizedBox(height: 16),

@@ -485,42 +485,6 @@ class _LoginState extends State<Login> {
                                         vertical: screenHeight * 0.01),
                                   ),
                                 ),
-                                SizedBox(height: screenHeight * 0.02),
-                                Text(
-                                  'Or',
-                                  style: GoogleFonts.amaranth(
-                                    fontSize: screenWidth * 0.05,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                SizedBox(height: screenHeight * 0.02),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Home(),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    'Login with Google',
-                                    style: GoogleFonts.amaranth(
-                                      fontSize: screenWidth * 0.05,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF3A59D1),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: screenWidth * 0.1,
-                                        vertical: screenHeight * 0.01),
-                                  ),
-                                )
                               ],
                             )
                     ],
