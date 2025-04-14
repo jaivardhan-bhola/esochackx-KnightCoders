@@ -66,8 +66,8 @@ class ComplaintsApiService {
     String? department,
     File? imageFile,
     int? userId,
-    String? imageValidation, // Added userId parameter
-    String? imageAnalysis, // Added imageAnalysis parameter
+    String? imageValidation,
+    String? imageAnalysis, 
   }) async {
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ class ComplaintsApiService {
         if (imageValidation != null) 'imageValidation': imageValidation,
         if (userId != null) 'users_permissions_user': userId,
         if (imageAnalysis != null)
-          'imageAnalysis': imageAnalysis, // Add imageAnalysis to payload
+          'imageValidation': imageAnalysis, // Add imageAnalysis to payload
       }
     });
     try {
@@ -103,7 +103,8 @@ class ComplaintsApiService {
         headers: requestHeaders,
         body: payload,
       );
-
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
       return response.statusCode == 200;
     } catch (e) {
       print('Error creating complaint: $e');
@@ -192,7 +193,7 @@ class ComplaintsApiService {
         if (userId != null)
           'users_permissions_user': userId, // Associate complaint with user
         if (imageAnalysis != null)
-          'imageAnalysis': imageAnalysis, // Add imageAnalysis to payload
+          'imageValidation': imageAnalysis, // Add imageAnalysis to payload
       }
     });
 

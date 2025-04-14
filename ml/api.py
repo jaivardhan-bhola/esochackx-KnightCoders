@@ -21,10 +21,23 @@ import torch.nn.functional as F
 import torchvision.models as models
 import torchvision.transforms as T
 from PIL import Image
+# Import LangChain components for search_and_summarize
+from langchain_groq import ChatGroq
+from langchain.chains import load_summarize_chain
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.utilities import GoogleSerperAPIWrapper
+from langchain_core.documents import Document
 
 # Load environment variables
 load_dotenv(".env")
 serper_api_key = os.getenv("SERPER_API_KEY")
+groq_api_key = os.getenv("GROQ_API_KEY")
+
+# Initialize LangChain components
+llm = ChatGroq(model="llama3-8b-8192", api_key=groq_api_key)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+summarize_chain = load_summarize_chain(llm, chain_type="map_reduce")
+search = GoogleSerperAPIWrapper(serper_api_key=serper_api_key)
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -52,7 +65,7 @@ skin_class_map = {
 }
 skin_class_labels = list(skin_class_map.values())
 
-def load_skin_model(path=r'/health0check-feature/skin-disease-model2.pth'):
+def load_skin_model(path='health0check-feature/skin-disease-model2.pth'):
     try:
         model = models.densenet121(pretrained=False)
         model.classifier = nn.Linear(model.classifier.in_features, 7)
@@ -80,9 +93,16 @@ def predict_skin(model, image_tensor):
         probs = F.softmax(output, dim=1)
         pred_idx = torch.argmax(probs, dim=1).item()
         confidence = probs[0][pred_idx].item()
+        
+        print(f"output")
     return skin_class_labels[pred_idx], confidence
 
 skin_model = load_skin_model()
+print(f"Skin disease model loaded: {'Successfully' if skin_model is not None else 'Failed'}")
+if skin_model is None:
+    print("WARNING: Skin disease model could not be loaded.")
+    print("Please ensure the file exists at 'health0check-feature/skin-disease-model2.pth'")
+    print("Current working directory: " + os.getcwd())
 
 def allowed_file(filename):
     """Check if the file has an allowed extension"""
@@ -94,7 +114,8 @@ def health_check():
     """Simple health check endpoint"""
     return jsonify({
         "status": "ok",
-        "model_loaded": deepfake_model is not None,
+        "deepfake_model_loaded": deepfake_model is not None,
+        "skin_model_loaded": skin_model is not None,
     })
 
 @app.route('/process_complaint', methods=['POST'])
@@ -210,29 +231,80 @@ def analyze_post_api():
 @app.route('/predict_skin_disease', methods=['POST'])
 def predict_skin_disease_api():
     """Predict skin disease from an uploaded image"""
+    print("Skin disease prediction request received")
+    
     if skin_model is None:
+        print("ERROR: Skin disease model not loaded")
         return jsonify({"error": "Skin disease model not loaded"}), 500
+    
     if 'image' not in request.files:
+        print("ERROR: No image file in request")
         return jsonify({"error": "No image uploaded"}), 400
+    
     file = request.files['image']
+    print(f"Received file: {file.filename if file and file.filename else 'No filename'}")
+    
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
+        print(f"Image saved to: {file_path}")
+        print(f"Image exists: {os.path.exists(file_path)}, Size: {os.path.getsize(file_path)} bytes")
+        
         try:
+            print("Preprocessing image...")
             image_tensor = preprocess_skin_image(file_path)
+            print("Running prediction...")
             prediction, confidence = predict_skin(skin_model, image_tensor)
+            print(f"Prediction successful: {prediction}, confidence: {confidence}")
+            
+            # Get additional information about the disease
+            print(f"Retrieving additional information about {prediction}...")
+            disease_info = search_and_summarize(prediction)
+            
+            # Clean up
             os.remove(file_path)
+            print(f"Temporary file removed: {file_path}")
+            
             return jsonify({
                 "prediction": prediction,
-                "confidence": confidence
+                "confidence": confidence,
+                "symptoms": disease_info.get("Symptoms", "No information available"),
+                "treatment": disease_info.get("Treatment", "No information available"),
+                "prevention": disease_info.get("Prevention", "No information available")
             })
         except Exception as e:
+            print(f"ERROR during prediction: {str(e)}")
             if os.path.exists(file_path):
                 os.remove(file_path)
+                print(f"Cleaned up temporary file after error: {file_path}")
             return jsonify({"error": str(e)}), 500
     else:
+        print(f"Invalid file type: {file.filename if file and file.filename else 'No file'}")
         return jsonify({"error": "Invalid file type"}), 400
+
+def search_and_summarize(disease_name):
+    """
+    Search for information about a disease and summarize the results.
+    Returns information about symptoms, treatment, and prevention.
+    """
+    queries = {
+        "Symptoms": f"What are the symptoms of {disease_name}?",
+        "Treatment": f"What are the treatments for {disease_name}?",
+        "Prevention": f"How to prevent {disease_name}?"
+    }
+    result = {}
+    for key, query in queries.items():
+        print(f"🔍 Fetching {key} info for {disease_name}...")
+        try:
+            raw = search.run(query)
+            docs = [Document(page_content=t) for t in text_splitter.split_text(raw)]
+            result[key] = summarize_chain.run(docs)
+            print(f"✅ Successfully retrieved {key} information")
+        except Exception as e:
+            print(f"❌ Error retrieving {key} information: {str(e)}")
+            result[key] = f"Could not retrieve information: {str(e)}"
+    return result
 
 if __name__ == '__main__':
     # Print Python and system information for debugging

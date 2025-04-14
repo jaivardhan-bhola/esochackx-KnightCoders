@@ -38,8 +38,7 @@ class _LoginState extends State<Login> {
               child: CircleAvatar(
                 radius: screenWidth * 0.2,
                 backgroundColor: Colors.blue,
-               backgroundImage: AssetImage('assets/logo.png'),
-              
+                backgroundImage: AssetImage('assets/logo.png'),
               ),
             ),
             SizedBox(height: screenHeight * 0.05),
@@ -293,10 +292,9 @@ class _LoginState extends State<Login> {
                                       box.put('email', user['user']['email']);
                                       box.put('type', user['user']['type']);
                                       box.put('phone', user['user']['phone']);
-                                      box.put(
-                                          'userId',
-                                          user['user']
-                                              ['id']); 
+                                      print(
+                                          'user phone: ${user['user']['phone']}');
+                                      box.put('userId', user['user']['id']);
                                       box.put('isLoggedIn', true);
                                       if (user['user']['type'] == 'Citizen') {
                                         Navigator.pushReplacement(
@@ -305,12 +303,13 @@ class _LoginState extends State<Login> {
                                             builder: (context) => Home(),
                                           ),
                                         );
-                                      }
-                                      else if (user['user']['type'] == 'Official') {
+                                      } else if (user['user']['type'] ==
+                                          'Official') {
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => Officialhome(),
+                                            builder: (context) =>
+                                                Officialhome(),
                                           ),
                                         );
                                       }
@@ -440,6 +439,8 @@ class _LoginState extends State<Login> {
                                           user['user']
                                               ['id']); // Store the user ID
                                       box.put('isLoggedIn', true);
+                                      box.put('phone', user['user']['phone']);
+                                      box.put('userId', user['user']['id']);
                                       if (user['user']['type'] == 'Citizen') {
                                         Navigator.pushReplacement(
                                           context,
@@ -447,12 +448,13 @@ class _LoginState extends State<Login> {
                                             builder: (context) => Home(),
                                           ),
                                         );
-                                      }
-                                      else if (user['user']['type'] == 'Official') {
+                                      } else if (user['user']['type'] ==
+                                          'Official') {
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => Officialhome(),
+                                            builder: (context) =>
+                                                Officialhome(),
                                           ),
                                         );
                                       }

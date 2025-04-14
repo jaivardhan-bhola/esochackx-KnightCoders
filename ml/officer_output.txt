@@ -167,3 +167,84 @@ Original Complaint: Road is broken
 Departments: Road Development
 Image Review: Based on the provided image excerpt, it appears to be a photograph of a road, but it's unclear whether the road is broken or not. The image is blurry and doesn't provide a clear view of the road's condition.
 
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T19:06:33.811098
+Severity: 3/5
+Summary: The road is damaged and needs repair.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T19:09:37.327179
+Severity: 2/5
+Summary: The road is in disrepair.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T19:25:33.763726
+Severity: 3/5
+Summary: The road is in disrepair.
+Location: Sitaburdi
+Original Complaint: Road is broken 
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T19:31:15.211616
+Severity: 2/5
+Summary: The road is damaged and requires repair.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T19:33:04.747596
+Severity: 2/5
+Summary: The road is in disrepair.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T19:35:47.469741
+Severity: 3/5
+Summary: "The road is in disrepair."
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T19:37:51.114425
+Severity: 2/5
+Summary: The road is in disrepair and cannot be driven on.
+Location: Sitaburdi
+Original Complaint: Road is broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T19:39:23.362905
+Severity: 3/5
+Summary: The user is asking for text or content to summarize, as none was provided.
+Location: Sitaburdi
+Original Complaint: Road is Broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T19:39:44.313865
+Severity: 3/5
+Summary: A polite request for more information to provide a summary.
+Location: Sitaburdi
+Original Complaint: Road is Broken
+Departments: Road Development
+
+--- OFFICER COPY ---
+Timestamp: 2025-04-14T19:41:52.887978
+Severity: 4/5
+Summary: "Poor drainage systems in the area cause roads to flood during rain, causing inconvenience and health risks, requiring immediate infrastructure improvements."
+Location: Sitaburdi
+Original Complaint: Whenever it rains, the roads in our locality turn into pools of water due to poor drainage systems. This creates significant inconvenience for commuters and increases the risk of diseases caused by stagnant water. Please address this issue urgently and improve the drainage infrastructure.
+Departments: Sanitation, Department of Water Resources
+Image Review: The image appears to be a photo of a road with water pooling on it during a rainy day. It is partially blurry and has a low resolution. It seems to be relevant to the complaint, as it provides visual evidence of the issue with drainage systems in the locality, which is the main concern of the citizen's complaint.
+

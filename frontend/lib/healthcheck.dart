@@ -1,7 +1,9 @@
 import 'package:civicsense/MLApiCalls.dart';
 import 'package:civicsense/Profile.dart';
+import 'package:civicsense/Home.dart'; // Added missing import
 import 'package:civicsense/chatbot.dart';
 import 'package:civicsense/posts.dart';
+import 'package:civicsense/skin_disease_detector.dart'; // Import the skin disease detector
 import 'package:civicsense/widgets/parallelogram_shape.dart'; // Import the custom shape
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -115,21 +117,68 @@ class _HealthCheckState extends State<HealthCheck> {
                           children: [
                             Text("Choose your predictor",
                                 style: GoogleFonts.instrumentSans(
-                                  fontSize: screenWidth * 0.06,
-                                  fontWeight: FontWeight.w600
-                                )),
+                                    fontSize: screenWidth * 0.06,
+                                    fontWeight: FontWeight.w600)),
                             SizedBox(height: screenHeight * 0.02),
                             GestureDetector(
-                              child: Image.asset(
-                                'assets/button1.png',
-                                height: screenHeight * 0.15,
+                              onTap: () {
+                                // Navigate to diabetes checker (placeholder for now)
+                               
+                                 Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SkinDiseaseDetector(),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      spreadRadius: 1,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Image.asset(
+                                  'assets/button1.png',
+                                  height: screenHeight * 0.15,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                            SizedBox(height: screenHeight * 0.02),
+                            SizedBox(height: screenHeight * 0.04),
                             GestureDetector(
-                              child: Image.asset(
-                                'assets/button2.png',
-                                height: screenHeight * 0.15,
+                              onTap: () {
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      spreadRadius: 1,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Image.asset(
+                                      'assets/button2.png',
+                                      height: screenHeight * 0.15,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
+                                   
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -141,7 +190,14 @@ class _HealthCheckState extends State<HealthCheck> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Home(),
+                              ),
+                            );
+                          },
                           icon: Icon(Icons.home_rounded,
                               color: Colors.white, size: screenWidth * 0.1)),
                       SizedBox(width: screenWidth * 0.05),
@@ -169,5 +225,5 @@ class _HealthCheckState extends State<HealthCheck> {
             )
           ],
         ));
-  }  
+  }
 }

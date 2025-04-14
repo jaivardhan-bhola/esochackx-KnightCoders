@@ -149,7 +149,12 @@ class _HomeState extends State<Home> {
         } else {
           severityValue = int.parse(severityString);
         }
-
+        print(_problemController.text.runtimeType);
+        print(parsedOfficerData['Summary'].runtimeType);
+        print(severityValue.runtimeType);
+        print(_selectedImage.runtimeType);
+        print(box.get('userId').runtimeType);
+        print(imageValidationText.runtimeType);
         bool success = await ComplaintsApiService.createComplaint(
           longText: _problemController.text,
           summarisedText: parsedOfficerData['Summary'] ?? 'No summary provided',
@@ -158,7 +163,7 @@ class _HomeState extends State<Home> {
           location: _selectedLocation,
           department: parsedOfficerData['Departments'] ?? 'Unknown',
           imageFile: _selectedImage,
-          userId: int.tryParse(box.get('userId')),
+          userId: box.get('userId'),
           imageAnalysis: imageValidationText, // Add the image validation text
         );
 

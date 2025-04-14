@@ -5,7 +5,7 @@ import 'package:path/path.dart' as path;
 
 class MLApiService {
   // Base URL for the Flask API - update to match your deployment
-  static const String baseUrl = "http://192.168.77.84:7122";
+  static const String baseUrl = "http://192.168.109.121:7122";
 
   // Singleton instance
   static final MLApiService _instance = MLApiService._internal();
@@ -155,6 +155,46 @@ class MLApiService {
       return imageFile.path;
     } catch (e) {
       throw Exception('Image upload failed: $e');
+    }
+  }
+
+  /// Predict skin disease from an image
+  Future<Map<String, dynamic>> predictSkinDisease(File imageFile) async {
+    try {
+      print('Predicting skin disease from image: ${imageFile.path}');
+      print('Image exists: ${imageFile.existsSync()}');
+      print('Image size: ${imageFile.lengthSync()} bytes');
+
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('$baseUrl/predict_skin_disease'));
+
+      // Add the image file
+      var stream = http.ByteStream(imageFile.openRead());
+      var length = await imageFile.length();
+
+      var multipartFile = http.MultipartFile(
+          'image',
+          stream,
+          length,
+          filename: path.basename(imageFile.path));
+
+      request.files.add(multipartFile);
+      print('Added file to request: ${multipartFile.filename}');
+
+      // Send the request
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        print('Response body: ${response.body}');
+        return jsonDecode(response.body);
+      } else {
+        print('Error response from server: ${response.body}');
+        throw Exception('Failed to predict skin disease: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in predictSkinDisease: $e');
+      throw Exception('Skin disease prediction failed: $e');
     }
   }
 }
