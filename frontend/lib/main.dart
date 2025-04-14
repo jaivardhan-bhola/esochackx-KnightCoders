@@ -1,5 +1,6 @@
 import 'package:civicsense/Home.dart';
 import 'package:civicsense/Login.dart';
+import 'package:civicsense/officialHome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -20,10 +21,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     var box = Hive.box('appBox');
     var isLoggedIn = box.get('isLoggedIn');
+    var userType = box.get('type');
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: isLoggedIn == true
-          ? const Home()
+          ? userType == 'Citizen' ? Home() : userType == 'Official' ? Officialhome() : Scaffold()
           : const Login(),
     );
   }

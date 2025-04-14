@@ -1,10 +1,12 @@
 import 'package:civicsense/MLApiCalls.dart';
+import 'package:civicsense/Profile.dart';
 import 'package:civicsense/chatbot.dart';
-import 'package:civicsense/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:civicsense/services/complaintsApiService.dart'; // Import the complaints service
+import 'package:hive_flutter/hive_flutter.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,6 +20,7 @@ class _HomeState extends State<Home> {
   String _selectedLocation = 'Sitaburdi'; // Default location
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
+  var box = Hive.box('appBox');
 
   final List<String> _locations = [
     'Sitaburdi',
@@ -27,7 +30,6 @@ class _HomeState extends State<Home> {
   ];
   final mlApi = MLApiService();
 
-  // Function to pick image from camera or gallery
   Future<void> _pickImage(ImageSource source) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(source: source);
@@ -77,310 +79,357 @@ class _HomeState extends State<Home> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-        body: Stack(
-      children: [
-        Container(
-          height: screenHeight,
-          width: screenWidth,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF3D90D7), Color(0xFF3A59D1)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          actions: [
+             IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Profile(),
+                              ),
+                            );
+                          },
+                          icon: Icon(Icons.person,
+                              color: Colors.white, size: screenWidth * 0.08)),
+          ],
+          title: Row(
             children: [
-              SizedBox(height: screenHeight * 0.1),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(width: screenWidth * 0.05),
-                  CircleAvatar(
-                      child: Image.asset('assets/logo.png'),
-                      radius: screenHeight * 0.02),
-                  SizedBox(width: screenWidth * 0.05),
-                  Text(
-                    'CivicSense',
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.06,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Spacer(),
-                  IconButton(
-                    icon: Icon(Icons.account_circle,
-                        color: Colors.white, size: screenWidth * 0.08),
-                    onPressed: () {
-                      // Handle notification button press
-                    },
-                  ),
-                  SizedBox(width: screenWidth * 0.02),
-                ],
+              CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: screenWidth * 0.05,
+              backgroundImage: AssetImage('assets/logo.png')
               ),
-              SizedBox(height: screenHeight * 0.04),
-              Image.asset('assets/bot.png', height: screenHeight * 0.22),
-              SizedBox(height: screenHeight * 0.01),
-              Container(
-                width: screenWidth,
-                height: screenHeight * 0.5,
-                decoration: BoxDecoration(
+              SizedBox(width: screenWidth * 0.02),
+              Text(
+                'CivicSense',
+                style: GoogleFonts.instrumentSans(
+                  fontSize: screenWidth * 0.06,
                   color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(screenWidth * 0.05),
-                    topRight: Radius.circular(screenWidth * 0.05),
-                  ),
                 ),
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      left: screenWidth * 0.05,
-                      right: screenWidth * 0.05,
-                      top: screenHeight * 0.02,
-                      bottom: screenHeight * 0.02,
+              ),
+            ],
+          ),
+        ),
+        body: Stack(
+          children: [
+            Container(
+              height: screenHeight,
+              width: screenWidth,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF3D84D6), Color(0xFF3A59D1)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: screenHeight * 0.15),
+                  Image.asset('assets/bot.png', height: screenHeight * 0.22),
+                  SizedBox(height: screenHeight * 0.01),
+                  Container(
+                    width: screenWidth,
+                    height: screenHeight * 0.545,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(screenWidth * 0.05),
+                        topRight: Radius.circular(screenWidth * 0.05),
+                      ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Describe your problem',
-                          style: GoogleFonts.instrumentSans(
-                            fontSize: screenWidth * 0.05,
-                            fontWeight: FontWeight.bold,
-                          ),
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: screenWidth * 0.05,
+                          right: screenWidth * 0.05,
+                          top: screenHeight * 0.02,
+                          bottom: screenHeight * 0.02,
                         ),
-                        SizedBox(height: screenHeight * 0.02),
-                        TextField(
-                          controller: _problemController,
-                          maxLines: null,
-                          minLines: 6,
-                          expands: false,
-                          decoration: InputDecoration(
-                            hintText: 'Enter your problem here',
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(screenWidth * 0.02),
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(screenWidth * 0.02),
-                              borderSide: BorderSide(color: Colors.blue),
-                            ),
-                          ),
-                          style: TextStyle(fontSize: screenWidth * 0.04),
-                        ),
-                        SizedBox(height: screenHeight * 0.02),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Select location',
+                              'Describe your problem',
                               style: GoogleFonts.instrumentSans(
                                 fontSize: screenWidth * 0.05,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            if (_selectedImage != null)
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedImage = null;
-                                  });
-                                },
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.close,
-                                        color: Colors.red, size: 16),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      'Remove image',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                          ],
-                        ),
-                        SizedBox(height: screenHeight * 0.01),
-                        Container(
-                          width: screenWidth * 0.9,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            borderRadius:
-                                BorderRadius.circular(screenWidth * 0.02),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: screenWidth * 0.02),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                value: _selectedLocation,
-                                isExpanded: true,
-                                hint: Text('Select location'),
-                                items: _locations.map((String location) {
-                                  return DropdownMenuItem<String>(
-                                    value: location,
-                                    child: Text(location),
-                                  );
-                                }).toList(),
-                                onChanged: (String? newValue) {
-                                  if (newValue != null) {
-                                    setState(() {
-                                      _selectedLocation = newValue;
-                                    });
-                                  }
-                                },
-                                style: TextStyle(
-                                  fontSize: screenWidth * 0.04,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        // Display selected image preview
-                        if (_selectedImage != null) ...[
-                          SizedBox(height: screenHeight * 0.02),
-                          Text(
-                            'Image attached',
-                            style: GoogleFonts.instrumentSans(
-                              fontSize: screenWidth * 0.04,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.green,
-                            ),
-                          ),
-                          SizedBox(height: screenHeight * 0.01),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Container(
-                              constraints: BoxConstraints(
-                                maxHeight: screenHeight * 0.15,
-                              ),
-                              child: Image.file(
-                                _selectedImage!,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ],
-                        SizedBox(height: screenHeight * 0.02),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                try {
-                                  // Show loading indicator
-                                  _showLoadingDialog(context);
-
-                                  final result = await mlApi.processComplaint(
-                                    complaint: _problemController.text,
-                                    location: _selectedLocation,
-                                    imageFile: _selectedImage,
-                                  );
-                                  print('result:${result['officer_view']}');
-                                  // Hide loading indicator
-                                  Navigator.pop(context);
-
-                                  // Show response in bottom sheet
-                                  _showResponseBottomSheet(
-                                      context, result['complainer_view']);
-
-                                  // Clear the form after successful submission
-                                  setState(() {
-                                    _problemController.clear();
-                                    _selectedImage = null;
-                                  });
-                                } catch (e) {
-                                  // Hide loading indicator
-                                  Navigator.pop(context);
-
-                                  // Show error message
-                                  _showErrorSnackBar(context, 'Error: $e');
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF3A59D1),
-                                shape: RoundedRectangleBorder(
+                            SizedBox(height: screenHeight * 0.02),
+                            TextField(
+                              controller: _problemController,
+                              maxLines: null,
+                              minLines: 6,
+                              expands: false,
+                              decoration: InputDecoration(
+                                hintText: 'Enter your problem here',
+                                border: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.circular(screenWidth * 0.02),
+                                  borderSide: BorderSide(color: Colors.grey),
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                  vertical: screenHeight * 0.015,
-                                  horizontal: screenWidth * 0.1,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(screenWidth * 0.02),
+                                  borderSide: BorderSide(color: Colors.blue),
                                 ),
                               ),
-                              child: Text(
-                                'Submit',
-                                style: TextStyle(
-                                  fontSize: screenWidth * 0.05,
-                                  color: Colors.white,
+                              style: TextStyle(fontSize: screenWidth * 0.04),
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Select location',
+                                  style: GoogleFonts.instrumentSans(
+                                    fontSize: screenWidth * 0.05,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                if (_selectedImage != null)
+                                  InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        _selectedImage = null;
+                                      });
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.close,
+                                            color: Colors.red, size: 16),
+                                        SizedBox(width: 4),
+                                        Text(
+                                          'Remove image',
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            SizedBox(height: screenHeight * 0.01),
+                            Container(
+                              width: screenWidth * 0.9,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius:
+                                    BorderRadius.circular(screenWidth * 0.02),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.02),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: _selectedLocation,
+                                    isExpanded: true,
+                                    hint: Text('Select location'),
+                                    items: _locations.map((String location) {
+                                      return DropdownMenuItem<String>(
+                                        value: location,
+                                        child: Text(location),
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? newValue) {
+                                      if (newValue != null) {
+                                        setState(() {
+                                          _selectedLocation = newValue;
+                                        });
+                                      }
+                                    },
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.04,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
-                            SizedBox(width: screenWidth * 0.05),
-                            ElevatedButton(
-                                onPressed: () {
-                                  _showImagePickerOptions();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFF3A59D1),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        screenWidth * 0.02),
+
+                            // Display selected image preview
+                            if (_selectedImage != null) ...[
+                              SizedBox(height: screenHeight * 0.02),
+                              Text(
+                                'Image attached',
+                                style: GoogleFonts.instrumentSans(
+                                  fontSize: screenWidth * 0.04,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              SizedBox(height: screenHeight * 0.01),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Container(
+                                  constraints: BoxConstraints(
+                                    maxHeight: screenHeight * 0.15,
                                   ),
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: screenHeight * 0.02,
-                                    horizontal: screenWidth * 0.05,
+                                  child: Image.file(
+                                    _selectedImage!,
+                                    fit: BoxFit.cover,
                                   ),
                                 ),
-                                child: Icon(
-                                  Icons.attach_file,
-                                  color: Colors.white,
-                                  size: screenWidth * 0.05,
-                                )),
+                              ),
+                            ],
+                            SizedBox(height: screenHeight * 0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    try {
+                                      // Show loading indicator
+                                      _showLoadingDialog(context);
+
+                                      final result =
+                                          await mlApi.processComplaint(
+                                        complaint: _problemController.text,
+                                        location: _selectedLocation,
+                                        imageFile: _selectedImage,
+                                      );
+                                      Map<String, String> parsedcomplainerData =
+                                          _parseResponse(
+                                              result['complainer_view']);
+                                      Map<String, String> parsedOfficerData =
+                                          _parseResponse(
+                                              result['officer_view']);
+                                      print(parsedOfficerData);
+                                      print(parsedcomplainerData);
+                                      try {
+                                        print('Complaint data:');
+                                        print(_problemController.text);
+                                        print(parsedOfficerData['Summary']);
+                                        print('Pending');
+
+                                        // Extract just the number part from severity (in case it's in format "3/5")
+                                        String severityString =
+                                            parsedOfficerData['Severity'] ??
+                                                '1';
+                                        int severityValue;
+                                        if (severityString.contains('/')) {
+                                          severityValue = int.parse(
+                                              severityString.split('/')[0]);
+                                        } else {
+                                          severityValue =
+                                              int.parse(severityString);
+                                        }
+
+                                        print(severityValue);
+                                        print(_selectedLocation);
+                                        print(parsedOfficerData['Departments']);
+                                        ComplaintsApiService.createComplaint(
+                                          longText: _problemController.text,
+                                          summarisedText:
+                                              parsedOfficerData['Summary'],
+                                          complaintStatus: 'Pending',
+                                          complaintSeverity: severityValue,
+                                          location: _selectedLocation,
+                                          department:
+                                              parsedOfficerData['Departments'],
+                                          imageFile:
+                                              _selectedImage, // Pass the selected image file
+                                          userId: box.get('userId'),
+                                        );
+                                      } catch (e) {
+                                        print('Error creating complaint: $e');
+                                      }
+                                      Navigator.pop(context);
+                                      _showResponseBottomSheet(
+                                          context, result['complainer_view']);
+
+                                      setState(() {
+                                        _problemController.clear();
+                                        _selectedImage = null;
+                                      });
+                                    } catch (e) {
+                                      // Hide loading indicator
+                                      Navigator.pop(context);
+                                      _showErrorSnackBar(context,
+                                          'Error submitting complaint');
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFF3A59D1),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          screenWidth * 0.02),
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: screenHeight * 0.015,
+                                      horizontal: screenWidth * 0.1,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Submit',
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.05,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: screenWidth * 0.05),
+                                ElevatedButton(
+                                    onPressed: () {
+                                      _showImagePickerOptions();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Color(0xFF3A59D1),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            screenWidth * 0.02),
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: screenHeight * 0.02,
+                                        horizontal: screenWidth * 0.05,
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      Icons.attach_file,
+                                      color: Colors.white,
+                                      size: screenWidth * 0.05,
+                                    )),
+                              ],
+                            ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.home_rounded,
-                          color: Colors.white, size: screenWidth * 0.1)),
-                  SizedBox(width: screenWidth * 0.05),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.feed_rounded,
-                          color: Colors.white, size: screenWidth * 0.1)),
-                  SizedBox(width: screenWidth * 0.05),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Chatbot(),
-                          ),
-                        );
-                      },
-                      icon: Icon(Icons.chat_rounded,
-                          color: Colors.white, size: screenWidth * 0.1)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.home_rounded,
+                              color: Colors.white, size: screenWidth * 0.1)),
+                      SizedBox(width: screenWidth * 0.05),
+                      IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.feed_rounded,
+                              color: Colors.white, size: screenWidth * 0.1)),
+                      SizedBox(width: screenWidth * 0.05),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Chatbot(),
+                              ),
+                            );
+                          },
+                          icon: Icon(Icons.chat_rounded,
+                              color: Colors.white, size: screenWidth * 0.1)),                     
+                    ],
+                  )
                 ],
-              )
-            ],
-          ),
-        )
-      ],
-    ));
+              ),
+            )
+          ],
+        ));
   }
 
   void _showLoadingDialog(BuildContext context) {
@@ -548,50 +597,8 @@ class _HomeState extends State<Home> {
   }
 
   // Format ISO timestamp to human readable format
-  String _formatTimestamp(String timestamp) {
-    try {
-      // Remove any extra whitespace and trim the string
-      timestamp = timestamp.trim();
-
-      // Parse the timestamp
-      DateTime dateTime = DateTime.parse(timestamp);
-
-      // Format the date in a human-readable form
-      String formattedDate =
-          "${_getMonthName(dateTime.month)} ${dateTime.day}, ${dateTime.year}";
-
-      // Format the time with AM/PM
-      String period = dateTime.hour >= 12 ? "PM" : "AM";
-      int hour = dateTime.hour > 12
-          ? dateTime.hour - 12
-          : (dateTime.hour == 0 ? 12 : dateTime.hour);
-      String minute = dateTime.minute.toString().padLeft(2, '0');
-
-      return "$formattedDate at $hour:$minute $period";
-    } catch (e) {
-      // If parsing fails, return the original string
-      return timestamp;
-    }
-  }
 
   // Helper method to get month name from month number
-  String _getMonthName(int month) {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
-    ];
-    return months[month - 1];
-  }
 
   Widget _buildContactDetails(String contactDetails) {
     return Column(
@@ -771,7 +778,25 @@ class _HomeState extends State<Home> {
     for (int i = 0; i < lines.length; i++) {
       String line = lines[i].trim();
 
-      if (line.startsWith('Original Complaint:')) {
+      // Officer view specific format parsing
+      if (line.startsWith('Severity:')) {
+        result['Severity'] = line.substring('Severity:'.length).trim();
+      } else if (line.contains('Summary:')) {
+        String summaryText =
+            line.substring(line.indexOf('Summary:') + 'Summary:'.length).trim();
+        // Remove quotes if present
+        if (summaryText.startsWith('"') && summaryText.contains('"')) {
+          summaryText = summaryText.substring(1, summaryText.lastIndexOf('"'));
+        }
+        result['Summary'] = summaryText;
+      } else if (line.startsWith('Status:')) {
+        result['Status'] = line.substring('Status:'.length).trim();
+      } else if (line.startsWith('Departments:')) {
+        result['Departments'] = line.substring('Departments:'.length).trim();
+      }
+
+      // Complainer view specific format parsing
+      else if (line.startsWith('Original Complaint:')) {
         if (currentSection.isNotEmpty) {
           result[currentSection] = currentContent.trim();
         }
@@ -807,6 +832,9 @@ class _HomeState extends State<Home> {
         }
         currentSection = 'Timestamp';
         currentContent = line.substring('Timestamp:'.length).trim();
+
+        // Store timestamp in result directly too
+        result['Timestamp'] = line.substring('Timestamp:'.length).trim();
       } else if (currentSection.isNotEmpty) {
         // Add to current section
         currentContent += (currentContent.isEmpty ? '' : '\n') + line;

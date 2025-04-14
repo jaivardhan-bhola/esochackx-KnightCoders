@@ -99,35 +99,8 @@ class _ChatbotState extends State<Chatbot> {
                         onPressed: () {
                           String text = _controller.text.trim();
 
-                          if (text.toLowerCase() == 'features') {
-                            // sleep for 2 secs 
-                            Future.delayed(const Duration(seconds: 2), () {
-                              setState(() {
-                                messages.add({
-                                  'message': text,
-                                  'isUserMessage': true,
-                                });
-
-                                messages.add({
-                                  'message': '- Detect crop diseases and their common indicators.\n- Learn precautions to prevent diseases in the future.\n- Easily check current rates of various fertilizers.\n- Access weather forecasts for your location.\n- Upload your soil report to analyze its characteristics.\n- Receive personalized fertilizer suggestions based on the data provided.',
-                                  'isUserMessage': false,
-                                });
-                              });
-                            });
-                            // setState(() {
-                            //   messages.add({
-                            //     'message': text,
-                            //     'isUserMessage': true,
-                            //   });
-
-                            //   messages.add({
-                            //     'message': '- Detect crop diseases and their common indicators.\n- Learn precautions to prevent diseases in the future.\n- Easily check current rates of various fertilizers.\n- Access weather forecasts for your location.\n- Upload your soil report to analyze its characteristics.\n- Receive personalized fertilizer suggestions based on the data provided.',
-                            //     'isUserMessage': false,
-                            //   });
-                            // });
-                          } else {
-                            sendMessage(text);
-                          }
+                        
+                          sendMessage(text);
                           _controller.clear();
                         },
                         icon: const Icon(Icons.send, color: Colors.white),

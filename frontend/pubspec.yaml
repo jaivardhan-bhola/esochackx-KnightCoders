@@ -40,6 +40,7 @@ dependencies:
   dialog_flowtter: ^0.2.0-nullsafety.0
   flutter_dotenv: ^5.2.1
   hive_flutter: ^1.1.0
+  intl: ^0.20.2
 
 dev_dependencies:
   flutter_test:

@@ -43,6 +43,7 @@ class MLApiService {
       final payload = {
         'complaint': complaint,
         'location': location,
+        
       };
 
       // If an image is provided, add its path to the payload
