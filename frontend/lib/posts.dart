@@ -809,7 +809,7 @@ class _PostsState extends State<Posts> {
                     if (box.get('type') == 'Citizen')
                       IconButton(
                           onPressed: () {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => HealthCheck(),

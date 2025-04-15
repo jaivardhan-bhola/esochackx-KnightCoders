@@ -154,12 +154,8 @@ class _ProfileState extends State<Profile> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        forceMaterialTransparency: true,
+        automaticallyImplyLeading: false,
         title: Text(
           'Profile',
           style: GoogleFonts.instrumentSans(
@@ -195,6 +191,7 @@ class _ProfileState extends State<Profile> {
       ),
       body: Stack(
         children: [
+          // Background gradient
           Container(
             height: screenHeight,
             width: screenWidth,
@@ -205,255 +202,462 @@ class _ProfileState extends State<Profile> {
                 end: Alignment.bottomRight,
               ),
             ),
-            child: Column(
-              children: [
-                SizedBox(height: screenHeight * 0.12),
-                CircleAvatar(
-                  radius: screenWidth * 0.15,
-                  backgroundColor: Colors.white,
-                  child: Text(
-                    _nameController.text.isNotEmpty
-                        ? _nameController.text[0].toUpperCase()
-                        : "U",
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.15,
-                      color: Color(0xFF3A59D1),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                Text(
-                  _nameController.text,
-                  style: GoogleFonts.instrumentSans(
-                    fontSize: screenWidth * 0.06,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  userType,
-                  style: GoogleFonts.instrumentSans(
-                    fontSize: screenWidth * 0.04,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                ),
-                SizedBox(height: screenHeight * 0.03),
-                Expanded(
-                  child: Container(
-                    width: screenWidth,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(screenWidth * 0.05),
-                        topRight: Radius.circular(screenWidth * 0.05),
+          ),
+
+          // Content
+          Column(
+            children: [
+              // Profile header with avatar
+              SizedBox(height: screenHeight * 0.12),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02),
+                child: Column(
+                  children: [
+                    // Avatar with animated border
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.white.withOpacity(0.2),
+                            blurRadius: 12,
+                            spreadRadius: 2,
+                          )
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        radius: screenWidth * 0.15,
+                        backgroundColor: Colors.white,
+                        child: Text(
+                          _nameController.text.isNotEmpty
+                              ? _nameController.text[0].toUpperCase()
+                              : "U",
+                          style: GoogleFonts.instrumentSans(
+                            fontSize: screenWidth * 0.15,
+                            color: Color(0xFF3A59D1),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.all(screenWidth * 0.05),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (!_isChangingPassword) ...[
-                            Text(
-                              _isEditing
-                                  ? "Edit Profile"
-                                  : "Profile Information",
-                              style: GoogleFonts.instrumentSans(
-                                fontSize: screenWidth * 0.06,
-                                fontWeight: FontWeight.bold,
+                    SizedBox(height: screenHeight * 0.02),
+                    // User name and type
+                    Text(
+                      _nameController.text,
+                      style: GoogleFonts.instrumentSans(
+                        fontSize: screenWidth * 0.06,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 6),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        userType,
+                        style: GoogleFonts.instrumentSans(
+                          fontSize: screenWidth * 0.035,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: screenHeight * 0.025),
+
+              // Main content area
+              Expanded(
+                child: Container(
+                  width: screenWidth,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(screenWidth * 0.07),
+                      topRight: Radius.circular(screenWidth * 0.07),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: Offset(0, -3),
+                      ),
+                    ],
+                  ),
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.all(screenWidth * 0.05),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (!_isChangingPassword) ...[
+                          // Section heading
+                          Row(
+                            children: [
+                              Icon(
+                                _isEditing
+                                    ? Icons.edit_note
+                                    : Icons.person_outline,
                                 color: Color(0xFF3A59D1),
+                                size: screenWidth * 0.07,
                               ),
-                            ),
-                            SizedBox(height: screenHeight * 0.02),
-
-                            // Profile fields
-                            _buildProfileField(
-                              icon: Icons.person,
-                              label: "Name",
-                              controller: _nameController,
-                              isEditable: _isEditing,
-                            ),
-                            SizedBox(height: screenHeight * 0.02),
-                            _buildProfileField(
-                              icon: Icons.email,
-                              label: "Email",
-                              controller: _emailController,
-                              isEditable: _isEditing,
-                              keyboardType: TextInputType.emailAddress,
-                            ),
-                            SizedBox(height: screenHeight * 0.02),
-                            _buildProfileField(
-                              icon: Icons.phone,
-                              label: "Phone",
-                              controller: _phoneController,
-                              isEditable: _isEditing,
-                              keyboardType: TextInputType.phone,
-                            ),
-
-                            if (_isEditing) ...[
-                              SizedBox(height: screenHeight * 0.03),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(
-                                    onPressed: _updateProfile,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFF3A59D1),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: screenWidth * 0.1,
-                                        vertical: screenHeight * 0.015,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Save Changes',
-                                      style: GoogleFonts.instrumentSans(
-                                        fontSize: screenWidth * 0.045,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              SizedBox(width: 10),
+                              Text(
+                                _isEditing
+                                    ? "Edit Profile"
+                                    : "Profile Information",
+                                style: GoogleFonts.instrumentSans(
+                                  fontSize: screenWidth * 0.055,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF3A59D1),
+                                ),
                               ),
                             ],
+                          ),
+                          SizedBox(height: screenHeight * 0.025),
 
+                          // Profile fields
+                          _buildProfileField(
+                            icon: Icons.person,
+                            label: "Name",
+                            controller: _nameController,
+                            isEditable: _isEditing,
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+                          _buildProfileField(
+                            icon: Icons.email,
+                            label: "Email",
+                            controller: _emailController,
+                            isEditable: _isEditing,
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+                          _buildProfileField(
+                            icon: Icons.phone,
+                            label: "Phone",
+                            controller: _phoneController,
+                            isEditable: _isEditing,
+                            keyboardType: TextInputType.phone,
+                          ),
+
+                          // Save button when editing
+                          if (_isEditing) ...[
                             SizedBox(height: screenHeight * 0.03),
-                            Divider(),
+                            Center(
+                              child: ElevatedButton.icon(
+                                icon: Icon(Icons.save, size: 20),
+                                label: Text(
+                                  'Save Changes',
+                                  style: GoogleFonts.instrumentSans(
+                                    fontSize: screenWidth * 0.045,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                onPressed: _updateProfile,
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Color(0xFF3A59D1),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: screenWidth * 0.1,
+                                    vertical: screenHeight * 0.015,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  elevation: 2,
+                                ),
+                              ),
+                            ),
+                          ],
+
+                          // Actions section
+                          if (!_isEditing) ...[
+                            SizedBox(height: screenHeight * 0.035),
+                            Divider(
+                              color: Colors.grey.withOpacity(0.3),
+                              thickness: 1.5,
+                            ),
                             SizedBox(height: screenHeight * 0.02),
 
-                            // Actions
-                            if (!_isEditing) ...[
-                              if (userType == "Citizen") ...[
-                                _buildActionTile(
-                                  icon: Icons.report_problem,
-                                  title: "Track Complaints",
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ComplaintsTracker()),
-                                    );
-                                  },
+                            // Section heading for actions
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.settings,
+                                  color: Color(0xFF3A59D1),
+                                  size: screenWidth * 0.065,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  "Account Settings",
+                                  style: GoogleFonts.instrumentSans(
+                                    fontSize: screenWidth * 0.055,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF3A59D1),
+                                  ),
                                 ),
                               ],
-                              _buildActionTile(
-                                icon: Icons.lock,
-                                title: "Change Password",
-                                onTap: () {
-                                  setState(() {
-                                    _isChangingPassword = true;
-                                  });
-                                },
-                              ),
-                              _buildActionTile(
-                                icon: Icons.help_outline,
-                                title: "Help & Support",
+                            ),
+                            SizedBox(height: screenHeight * 0.02),
+
+                            // Styled action tiles
+                            if (userType == "Citizen") ...[
+                              _buildStyledActionTile(
+                                context: context,
+                                icon: Icons.report_problem_outlined,
+                                title: "Track Complaints",
+                                subtitle:
+                                    "View and manage your complaint records",
                                 onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Chatbot()),
+                                        builder: (context) =>
+                                            ComplaintsTracker()),
                                   );
                                 },
+                                iconBackgroundColor:
+                                    Colors.amber.withOpacity(0.15),
+                                iconColor: Colors.amber.shade700,
                               ),
-                              _buildActionTile(
-                                icon: Icons.logout,
-                                title: "Logout",
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text("Confirm Logout"),
-                                        content: Text(
-                                            "Are you sure you want to logout?"),
-                                        actions: [
-                                          TextButton(
-                                            child: Text("Cancel"),
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                          ),
-                                          TextButton(
-                                            child: Text("Logout"),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                              _logout();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                textColor: Colors.red,
-                              ),
+                              SizedBox(height: screenHeight * 0.015),
                             ],
-                          ],
 
-                          // Password Change Form
-                          if (_isChangingPassword) ...[
-                            Text(
-                              "Change Password",
-                              style: GoogleFonts.instrumentSans(
-                                fontSize: screenWidth * 0.06,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF3A59D1),
-                              ),
+                            _buildStyledActionTile(
+                              context: context,
+                              icon: Icons.lock_outlined,
+                              title: "Change Password",
+                              subtitle: "Update your account password",
+                              onTap: () {
+                                setState(() {
+                                  _isChangingPassword = true;
+                                });
+                              },
+                              iconBackgroundColor:
+                                  Color(0xFF3A59D1).withOpacity(0.15),
+                              iconColor: Color(0xFF3A59D1),
                             ),
-                            SizedBox(height: screenHeight * 0.02),
-                            _buildPasswordField(
-                              label: "Current Password",
-                              controller: _currentPasswordController,
+
+                            SizedBox(height: screenHeight * 0.015),
+
+                            _buildStyledActionTile(
+                              context: context,
+                              icon: Icons.help_outline,
+                              title: "Help & Support",
+                              subtitle: "Get assistance with the app",
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Chatbot()),
+                                );
+                              },
+                              iconBackgroundColor:
+                                  Colors.green.withOpacity(0.15),
+                              iconColor: Colors.green.shade700,
                             ),
-                            SizedBox(height: screenHeight * 0.02),
-                            _buildPasswordField(
-                              label: "New Password",
-                              controller: _newPasswordController,
-                            ),
-                            SizedBox(height: screenHeight * 0.03),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: _changePassword,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF3A59D1),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: screenWidth * 0.1,
-                                      vertical: screenHeight * 0.015,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Update Password',
-                                    style: GoogleFonts.instrumentSans(
-                                      fontSize: screenWidth * 0.045,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
+
+                            SizedBox(height: screenHeight * 0.015),
+
+                            _buildStyledActionTile(
+                              context: context,
+                              icon: Icons.logout,
+                              title: "Logout",
+                              subtitle: "Sign out from your account",
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Dialog(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      elevation: 8,
+                                      child: Container(
+                                        padding: EdgeInsets.all(20),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Colors.white,
+                                              Color(0xFFF5F7FF)
+                                            ],
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Icon(Icons.logout,
+                                                    color: Colors.red),
+                                                SizedBox(width: 10),
+                                                Text(
+                                                  'Confirm Logout',
+                                                  style: GoogleFonts
+                                                      .instrumentSans(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.red,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 20),
+                                            Text(
+                                              'Are you sure you want to logout from CivicSense?',
+                                              style: GoogleFonts.instrumentSans(
+                                                fontSize: 16,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                            SizedBox(height: 24),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text(
+                                                    'Cancel',
+                                                    style: GoogleFonts
+                                                        .instrumentSans(
+                                                      fontSize: 16,
+                                                      color: Colors.grey[600],
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 16),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    _logout();
+                                                  },
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    foregroundColor:
+                                                        Colors.white,
+                                                    backgroundColor: Colors.red,
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 20,
+                                                            vertical: 12),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12),
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    'Logout',
+                                                    style: GoogleFonts
+                                                        .instrumentSans(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              iconBackgroundColor: Colors.red.withOpacity(0.15),
+                              iconColor: Colors.red,
+                              textColor: Colors.red,
                             ),
                           ],
                         ],
-                      ),
+
+                        // Password Change Form
+                        if (_isChangingPassword) ...[
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.security,
+                                color: Color(0xFF3A59D1),
+                                size: screenWidth * 0.07,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                "Change Password",
+                                style: GoogleFonts.instrumentSans(
+                                  fontSize: screenWidth * 0.055,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF3A59D1),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: screenHeight * 0.025),
+                          _buildPasswordField(
+                            label: "Current Password",
+                            controller: _currentPasswordController,
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+                          _buildPasswordField(
+                            label: "New Password",
+                            controller: _newPasswordController,
+                          ),
+                          SizedBox(height: screenHeight * 0.03),
+                          Center(
+                            child: ElevatedButton.icon(
+                              icon: Icon(Icons.vpn_key, size: 20, color: Colors.white),
+                              label: Text(
+                                'Update Password',
+                                style: GoogleFonts.instrumentSans(
+                                  fontSize: screenWidth * 0.045,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              onPressed: _changePassword,
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Color(0xFF3A59D1),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: screenWidth * 0.1,
+                                  vertical: screenHeight * 0.015,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                elevation: 2,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
+  // Updated profile field with more modern design
   Widget _buildProfileField({
     required IconData icon,
     required String label,
@@ -462,25 +666,45 @@ class _ProfileState extends State<Profile> {
     TextInputType? keyboardType,
   }) {
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 5,
+            spreadRadius: 0.5,
+            offset: Offset(0, 2),
+          ),
+        ],
+        border: Border.all(color: Colors.grey.withOpacity(0.1)),
       ),
       child: Row(
         children: [
-          Icon(icon, color: Color(0xFF3A59D1)),
-          SizedBox(width: 12),
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Color(0xFF3A59D1).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              icon,
+              color: Color(0xFF3A59D1),
+              size: 22,
+            ),
+          ),
+          SizedBox(width: 15),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   label,
-                  style: TextStyle(
+                  style: GoogleFonts.instrumentSans(
                     color: Colors.grey[600],
-                    fontSize: 12,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 if (isEditable)
@@ -492,7 +716,7 @@ class _ProfileState extends State<Profile> {
                       contentPadding: EdgeInsets.zero,
                       isDense: true,
                     ),
-                    style: TextStyle(
+                    style: GoogleFonts.instrumentSans(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -500,9 +724,10 @@ class _ProfileState extends State<Profile> {
                 else
                   Text(
                     controller.text,
-                    style: TextStyle(
+                    style: GoogleFonts.instrumentSans(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
+                      color: Colors.black87,
                     ),
                   ),
               ],
@@ -513,21 +738,37 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  // Updated password field with more modern design
   Widget _buildPasswordField({
     required String label,
     required TextEditingController controller,
   }) {
     return Container(
-      padding: EdgeInsets.all(12),
+      padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.withOpacity(0.3)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 5,
+            spreadRadius: 0.5,
+            offset: Offset(0, 2),
+          ),
+        ],
+        border: Border.all(color: Colors.grey.withOpacity(0.1)),
       ),
       child: Row(
         children: [
-          Icon(Icons.lock, color: Color(0xFF3A59D1)),
-          SizedBox(width: 12),
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Color(0xFF3A59D1).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.lock, color: Color(0xFF3A59D1), size: 22),
+          ),
+          SizedBox(width: 15),
           Expanded(
             child: TextField(
               controller: controller,
@@ -537,8 +778,11 @@ class _ProfileState extends State<Profile> {
                 contentPadding: EdgeInsets.zero,
                 isDense: true,
                 hintText: label,
+                hintStyle: GoogleFonts.instrumentSans(
+                  color: Colors.grey[400],
+                ),
               ),
-              style: TextStyle(
+              style: GoogleFonts.instrumentSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
               ),
@@ -547,7 +791,7 @@ class _ProfileState extends State<Profile> {
           IconButton(
             icon: Icon(
               _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
-              color: Colors.grey,
+              color: Color(0xFF3A59D1),
             ),
             onPressed: () {
               setState(() {
@@ -560,6 +804,89 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  // New modern styled action tile widget
+  Widget _buildStyledActionTile({
+    required BuildContext context,
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required VoidCallback onTap,
+    required Color iconBackgroundColor,
+    required Color iconColor,
+    Color? textColor,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.08),
+            blurRadius: 4,
+            spreadRadius: 0.5,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(15),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(15),
+          onTap: onTap,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: iconBackgroundColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: iconColor,
+                    size: 24,
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: GoogleFonts.instrumentSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: textColor ?? Colors.black87,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: GoogleFonts.instrumentSans(
+                          fontSize: 13,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.chevron_right,
+                  color: textColor ?? Colors.grey,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Keep the original _buildActionTile method for backward compatibility
   Widget _buildActionTile({
     required IconData icon,
     required String title,
@@ -570,7 +897,7 @@ class _ProfileState extends State<Profile> {
       leading: Icon(icon, color: Color(0xFF3A59D1)),
       title: Text(
         title,
-        style: TextStyle(
+        style: GoogleFonts.instrumentSans(
           fontWeight: FontWeight.w500,
           fontSize: 16,
           color: textColor,

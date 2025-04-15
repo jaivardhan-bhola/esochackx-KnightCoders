@@ -503,7 +503,7 @@ class _SkinDiseaseDetectorState extends State<SkinDiseaseDetector> {
                               Expanded(
                                 child: ElevatedButton.icon(
                                   onPressed: _showImagePickerOptions,
-                                  icon: Icon(Icons.photo_library),
+                                  icon: Icon(Icons.photo_library, size: 20, color: Colors.white),
                                   label: Text('Upload Image'),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFF3A59D1),
@@ -529,7 +529,7 @@ class _SkinDiseaseDetectorState extends State<SkinDiseaseDetector> {
                                             strokeWidth: 2,
                                           ),
                                         )
-                                      : Icon(Icons.search),
+                                      : Icon(Icons.search, size: 20, color: Colors.white),
                                   label: Text(_isLoading ? 'Analyzing...' : 'Analyze'),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFF71B340),
